@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 
 public class Stats {
 
+    private static boolean isNullOrEmpty(Map<?, ?> map) {
+        return map == null || map.isEmpty();
+    }
+
     /**
      * Gets the most played song from all albums.
      *
@@ -19,7 +23,7 @@ public class Stats {
      * @return The most played Song, or null if no albums or songs are available.
      */
     public static Song getMostPlayedSong(Map<String, Album> albums) {
-        if (albums == null || albums.isEmpty()) {
+        if (isNullOrEmpty(albums)) {
             return null;
         }
         return albums.values().stream()
@@ -35,7 +39,7 @@ public class Stats {
      * @return The name of the most listened to artist, or null if no data.
      */
     public static String getMostListenedArtist(Map<String, Album> albums) {
-        if (albums == null || albums.isEmpty()) {
+        if (isNullOrEmpty(albums)) {
             return null;
         }
         Map<String, Integer> playCountByArtist = new HashMap<>();
@@ -60,7 +64,7 @@ public class Stats {
      * @return The User with the largest listening history, or null if the map is empty or null.
      */
     public static User getTopListener(Map<String, User> usersMap) {
-        if (usersMap == null || usersMap.isEmpty()) {
+        if (isNullOrEmpty(usersMap)) {
             return null;
         }
         return usersMap.values().stream()
@@ -69,7 +73,7 @@ public class Stats {
     }
 
     public static User getTopListenerFromDate(Map<String, User> usersMap, LocalDateTime fromDate) {
-        if (usersMap == null || usersMap.isEmpty() || fromDate == null) {
+        if (isNullOrEmpty(usersMap) || fromDate == null) {
             return null;
         }
         return usersMap.values().stream()
@@ -89,7 +93,7 @@ public class Stats {
      * @return The User with the most points, or null if the map is empty or null.
      */
     public static User getUserWithMostPoints(Map<String, User> usersMap) {
-        if (usersMap == null || usersMap.isEmpty()) {
+        if (isNullOrEmpty(usersMap)) {
             return null;
         }
         return usersMap.values().stream()
@@ -104,16 +108,16 @@ public class Stats {
      * @return The name of the most reproduced genre, or null if no users or history.
      */
     public static String mostListenedGenre(Map<String, User> usersMap) {
-        if (usersMap == null || usersMap.isEmpty()) {
+        if (isNullOrEmpty(usersMap)) {
             return null;
         }
 
-        Map<String, Long> GenreCounter = usersMap.values().stream()
+        Map<String, Long> genreCounter = usersMap.values().stream()
                 .flatMap(user -> user.getHistory().stream()) // Stream all history entries from all users
                 .map(historyEntry -> historyEntry.getSong().getGenre()) // Get the genre of each song in history
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting())); // Count occurrences of each genre
 
-        return GenreCounter.entrySet().stream()
+        return genreCounter.entrySet().stream()
                 .max(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
                 .orElse(null);
@@ -126,7 +130,7 @@ public class Stats {
      * @return The total count of public playlists.
      */
     public static long countPublicPlaylists(Map<String, Playlist> playlistsMap) {
-        if (playlistsMap == null || playlistsMap.isEmpty()) {
+        if (isNullOrEmpty(playlistsMap)) {
             return 0L;
         }
         return playlistsMap.values().stream()
@@ -142,7 +146,7 @@ public class Stats {
      * @return The User who has created the most playlists, or null if no playlists or creators.
      */
     public static User userWithMostPlaylists(Map<String, Playlist> playlistsMap) {
-        if (playlistsMap == null || playlistsMap.isEmpty()) {
+        if (isNullOrEmpty(playlistsMap)) {
             return null;
         }
 
