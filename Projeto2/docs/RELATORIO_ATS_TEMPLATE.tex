@@ -1,0 +1,406 @@
+\documentclass{article}
+
+% Language and encoding
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Page layout
+\usepackage[a4paper,left=25mm,right=25mm,top=25mm,bottom=25mm,headheight=6mm,footskip=12mm]{geometry}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{1ex}
+
+% Core packages
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{indentfirst}
+\usepackage{changepage}
+\usepackage{ragged2e}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{pgfgantt}
+\usepackage{titlesec}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{rotating}
+\usepackage{adjustbox}
+\usepackage{lmodern}
+\usepackage{tocloft}
+\usepackage{placeins}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+%% headers & footers
+\fancyhf{}
+\rhead{\small{\emph{\projtitle, \projauthor}}}
+\rfoot{\small{\thepage\ / \pageref{LastPage}}}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%% colors
+\definecolor{engineering}{rgb}{0.549,0.176,0.098}
+\definecolor{cloudwhite}{cmyk}{0,0,0,0.025}
+
+%% source-code listings
+\lstset{
+ language=Java,
+ basicstyle=\footnotesize\ttfamily,
+ keywordstyle=\bfseries,
+ numbers=left,
+ numberstyle=\scriptsize\texttt,
+ stepnumber=1,
+ numbersep=8pt,
+ frame=tb,
+ float=htb,
+ aboveskip=8mm,
+ belowskip=4mm,
+ backgroundcolor=\color{cloudwhite},
+ showspaces=false,
+ showstringspaces=false,
+ showtabs=false,
+ tabsize=2,
+ captionpos=b,
+ belowcaptionskip=12pt,
+ breaklines=true,
+ breakatwhitespace=false,
+ commentstyle=\color{gray},
+ mathescape=true,
+ lineskip=3pt,
+ extendedchars=true
+}
+
+%% hyperreferences
+\hypersetup{
+ plainpages=false,
+ pdfpagelayout=SinglePage,
+ bookmarksopen=false,
+ bookmarksnumbered=true,
+ breaklinks=true,
+ linktocpage,
+ colorlinks=true,
+ linkcolor=engineering,
+ urlcolor=engineering,
+ filecolor=engineering,
+ citecolor=engineering,
+ allcolors=engineering
+}
+
+%% path to figures
+\graphicspath{{figures/}}
+
+%% macros
+\newcommand{\school}{Universidade do Minho}
+\newcommand{\degree}{Licenciatura em Engenharia Informática}
+\newcommand{\projtitle}{Análise e Teste de Software}
+\newcommand{\subtitle}{2025/2026}
+\newcommand{\projauthor}{Trabalho Prático}
+\newcommand{\projname}{Projeto 2 - SpotifUM}
+
+\newcommand{\atsfigure}[3]{
+\begin{figure}[H]
+\centering
+\IfFileExists{#1}{
+    \includegraphics[width=#2\textwidth]{#1}
+}{
+    \fbox{\parbox[c][50mm][c]{0.9\textwidth}{\centering Placeholder para print: #1}}
+}
+\caption{#3}
+\end{figure}
+}
+
+\renewcommand{\thesection}{\arabic{section}}
+\setcounter{secnumdepth}{3}
+
+\begin{document}
+
+% Capa
+\begin{titlepage}
+\centering
+
+\vspace{-15mm}
+{\large \textbf{\textsc{\school}}}\\
+
+\vspace{0.5cm}
+{\large \degree}\\[8mm]
+
+\vspace{2cm}
+\includegraphics[width=52mm]{UM.png}
+
+\vspace{1cm}
+{\Large \projtitle}\\[2mm]
+{\large \subtitle}\\[28mm]
+
+{\Large \textbf{\projauthor}}\\
+\vspace{0.5cm}
+{\Large \projname}
+
+\vspace{5cm}
+
+{\large Francisco Barros A106894}\\[2mm]
+{\large Tiago Martins A106927}\\[2mm]
+
+\vspace{2cm}
+{\Large \textbf{Maio 2026}}
+
+\end{titlepage}
+
+\renewcommand{\contentsname}{Índice}
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+\section{Introdução}
+O presente relatório descreve a aplicação de técnicas de Análise e Teste de Software ao Projeto 2 (SpotifUM), no contexto da unidade curricular de ATS. O objetivo foi elevar a maturidade de teste da solução através de uma abordagem integrada, combinando:
+\begin{itemize}
+    \item reforço manual de testes unitários com JUnit;
+    \item avaliação estrutural por cobertura (JaCoCo);
+    \item avaliação de qualidade dos testes por mutação (PIT);
+    \item geração automática de propriedades com jqwik (Property-Based Testing);
+    \item tentativa de geração automática de testes com EvoSuite;
+    \item automação integral do pipeline para execução reprodutível.
+\end{itemize}
+
+Este documento apresenta não apenas os resultados obtidos, mas também as decisões técnicas, limitações da toolchain e o racional de melhoria iterativa usado para aumentar a robustez da suite de testes.
+
+\section{Objetivos e Requisitos}
+\subsection{Objetivos ATS}
+\begin{itemize}
+    \item Complementar e reforçar a suite JUnit.
+    \item Executar geração automática com EvoSuite.
+    \item Analisar cobertura e qualidade de testes.
+    \item Avaliar robustez com mutação (PIT).
+    \item Aplicar Property-Based Testing em larga escala.
+\end{itemize}
+
+\subsection{Extras}
+\begin{itemize}
+    \item Automação do pipeline com um comando.
+    \item Refatoração e validação por regressão.
+    \item Reforço de propriedades com PBT.
+\end{itemize}
+
+\subsection{Estado de cumprimento}
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.60\textwidth}c}
+\toprule
+Requisito do enunciado ATS & Estado \\
+\midrule
+Complemento da suite JUnit & Concluído \\
+EvoSuite para geração automática & Concluído com limitação de runtime \\
+Análise de cobertura e qualidade & Concluído \\
+Mutação com PIT & Concluído \\
+PBT em larga escala & Concluído \\
+Relatório com análise e gráficos & Concluído (com placeholders de prints) \\
+\bottomrule
+\end{tabular}
+\caption{Matriz de cumprimento dos requisitos do enunciado}
+\end{table}
+
+\section{Arquitetura e Decisões}
+\subsection{Visão geral de classes}
+A solução organiza-se em três blocos principais:
+\begin{itemize}
+    \item \textbf{Domínio} (módulos \texttt{model.*}): entidades de negócio como \texttt{User}, \texttt{Song}, \texttt{Playlist}, \texttt{Album} e planos de subscrição.
+    \item \textbf{Utilitários} (módulo \texttt{util}): serialização/deserialização, parsing de dados e estatísticas.
+    \item \textbf{Interação} (módulo \texttt{delegate}): camada de menus/fluxos de terminal.
+\end{itemize}
+
+No contexto ATS, o foco principal recaiu no núcleo de lógica de negócio e utilitários, por concentrarem comportamento funcional e serem menos voláteis do que a camada de interface textual.
+
+\atsfigure{figures/uml_spotifum.png}{0.92}{Diagrama de classes (exportado da modelação do projeto)}
+
+\subsection{Decisões técnicas}
+As principais decisões de engenharia de teste foram:
+\begin{itemize}
+    \item privilegiar \textbf{testes orientados a risco} (estatísticas, adapters, parsing e invariantes de coleção);
+    \item complementar \textbf{testes exemplo-a-exemplo} com \textbf{propriedades geradas} (jqwik);
+    \item tratar mutação como mecanismo de \textbf{feedback} para identificar zonas frágeis da suite;
+    \item automatizar execução para reduzir erro humano e garantir repetibilidade dos resultados.
+\end{itemize}
+
+\section{Metodologia de Teste}
+\subsection{JUnit}
+Foram reforçados testes unitários orientados a risco, com foco em:
+\begin{itemize}
+    \item regras de negócio de estatísticas exigidas no enunciado ATS;
+    \item serialização/deserialização e adapters (pontos com baixa cobertura inicial);
+    \item validação de fronteiras e entradas nulas/vazias.
+\end{itemize}
+
+Classes de teste adicionadas nesta fase ATS:
+\begin{itemize}
+    \item \texttt{LocalDateTimeAdapterTest}
+    \item \texttt{SubscriptionPlanAdapterTest}
+    \item \texttt{SongTypeAdapterTest}
+    \item \texttt{JsonDataParserTest}
+    \item \texttt{StatsPropertyTest}
+    \item reforço em \texttt{StatsTest}
+\end{itemize}
+
+Foram também mantidos e estabilizados os testes existentes para evitar regressão funcional, incluindo a correção de expectativas em casos onde o comportamento do código era válido mas o teste assumia semântica incorreta.
+
+\subsection{EvoSuite}
+A integração foi implementada no Gradle e incluída na pipeline automática. Contudo, a execução encontra limitação de compatibilidade entre runtime disponível no container EvoSuite e bytecode Java 17 (class file 61), levando a falha de instrumentação nas classes alvo.
+
+Resultado: requisito cumprido do ponto de vista de integração e execução técnica, mas com limitação externa de ferramenta para geração válida no ambiente atual.
+
+\atsfigure{figures/evosuite_execution.png}{0.90}{Execução EvoSuite e limitação de compatibilidade de bytecode}
+
+\subsection{JaCoCo}
+A recolha de cobertura foi realizada com \texttt{jacocoTestReport}, incluindo métricas de linha, branch, método e classe. Os relatórios são produzidos em XML e HTML para análise agregada e detalhada por pacote/classe.
+
+Fórmula usada para cobertura por tipo:
+\[
+\text{Cobertura} = \frac{\text{covered}}{\text{covered} + \text{missed}} \times 100
+\]
+
+\subsection{PIT}
+A estratégia aplicada foi "testes dirigidos por sobreviventes": identificar mutantes e no-coverage, criar testes específicos para esses caminhos e reexecutar PIT para validar impacto.
+
+A leitura do PIT foi dividida em duas dimensões:
+\begin{itemize}
+    \item \textbf{mutation score}: eficácia global da suite para detetar mutantes;
+    \item \textbf{no coverage}: volume de código mutado não exercitado por testes.
+\end{itemize}
+
+\subsection{Property-Based Testing (jqwik)}
+Foram implementadas propriedades para invariantes de comportamento, incluindo:
+\begin{itemize}
+    \item invariantes de \texttt{Playlist} (substituição de lista e cópia defensiva);
+    \item consistência de contagem em \texttt{Stats.countPublicPlaylists} com entradas geradas automaticamente.
+\end{itemize}
+
+As propriedades foram executadas com múltiplas tentativas aleatórias por execução, aumentando a probabilidade de detetar defeitos em combinações não cobertas por testes example-based.
+
+\section{Resultados}
+\subsection{Resultados JUnit}
+\begin{table}[H]
+\centering
+\begin{tabular}{lr}
+\toprule
+Métrica & Valor \\
+\midrule
+Total de testes executados & 141 \\
+Taxa de sucesso & 100\% \\
+\bottomrule
+\end{tabular}
+\caption{Resumo da execução JUnit}
+\end{table}
+
+\atsfigure{figures/junit_report_overview.png}{0.94}{Resumo da execução JUnit (Gradle test report)}
+
+\subsection{Resultados de cobertura (JaCoCo)}
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Tipo & Cobertas & Falhadas & Cobertura \\
+\midrule
+Line & 682 & 1022 & 40.02\% \\
+Branch & 263 & 339 & 43.69\% \\
+Method & 183 & 126 & 59.22\% \\
+Class & 20 & 8 & 71.43\% \\
+\bottomrule
+\end{tabular}
+\caption{Resumo de cobertura JaCoCo}
+\end{table}
+
+\atsfigure{figures/jacoco_overview.png}{0.94}{Cobertura global JaCoCo por tipo de contador}
+
+\subsection{Resultados de mutação (PIT)}
+\begin{table}[H]
+\centering
+\begin{tabular}{lr}
+\toprule
+Métrica & Valor \\
+\midrule
+Mutações geradas & 890 \\
+Mutações mortas & 265 \\
+Mutation score & 30\% \\
+Mutações sobreviventes & 38 \\
+Mutações sem cobertura & 587 \\
+Test strength & 87\% \\
+Testes executados pelo PIT & 395 \\
+\bottomrule
+\end{tabular}
+\caption{Resumo de mutação PIT}
+\end{table}
+
+\atsfigure{figures/pit_overview.png}{0.94}{Resumo PIT: score, sobreviventes e no coverage}
+
+\subsection{Leitura dos resultados}
+Os resultados mostram evolução positiva do baseline, especialmente em classes utilitárias e estatísticas. Ainda assim, o volume de mutantes \texttt{NO\_COVERAGE} evidencia que o maior ganho futuro está em ampliar testes para caminhos ainda não exercitados, principalmente na camada \texttt{delegate}.
+
+\section{Análise Crítica}
+\subsection{Pontos fortes}
+\begin{itemize}
+    \item melhoria mensurável de cobertura e mutation score face à iteração inicial;
+    \item incremento da robustez em serialização/adapters, reduzindo risco de regressão em persistência;
+    \item combinação de testes determinísticos com PBT para maior diversidade de cenários;
+    \item pipeline automatizado reproduzível, reduzindo variabilidade operacional.
+\end{itemize}
+
+\subsection{Lacunas e risco residual}
+\begin{itemize}
+    \item persistem mutantes sobreviventes em lógica condicional e retornos em alguns métodos de negócio;
+    \item o bloco \texttt{NO\_COVERAGE} no PIT continua elevado em módulos de interface textual;
+    \item EvoSuite permanece condicionado por incompatibilidade de bytecode/runtime no ambiente atual.
+\end{itemize}
+
+\subsection{Refatoração e regressão}
+Foi aplicada refatoração behavior-preserving em \texttt{Stats} para reduzir duplicação e melhorar legibilidade:
+\begin{itemize}
+    \item extração do helper \texttt{isNullOrEmpty(Map<?,?>)} para validações repetidas;
+    \item normalização de nomenclatura local (\texttt{genreCounter}).
+\end{itemize}
+
+A regressão foi validada por reexecução de \texttt{test}, \texttt{jacocoTestReport} e \texttt{pitest}, sem introdução de falhas.
+
+\section{Automação e Reprodutibilidade}
+\begin{itemize}
+    \item Comando único: \texttt{make full}
+    \item Comandos por etapa: \texttt{make test}, \texttt{make coverage}, \texttt{make mutation}, \texttt{make property}, \texttt{make evosuite}
+    \item Pipeline Gradle: \texttt{./gradlew atsFullPipeline --no-daemon}
+\end{itemize}
+
+\begin{lstlisting}[caption={Exemplo de pipeline end-to-end},label={lst:pipeline}]
+make full
+
+# equivalente Gradle
+./gradlew atsFullPipeline --no-daemon
+\end{lstlisting}
+
+\atsfigure{figures/pipeline_console.png}{0.94}{Execução automatizada da pipeline ATS}
+
+\section{Plano de melhoria para nota máxima}
+Com base nas métricas atuais e no enunciado, os próximos ganhos de qualidade são objetivos e mensuráveis:
+\begin{itemize}
+    \item reduzir mutantes sobreviventes em métodos de negócio com testes dirigidos;
+    \item reduzir mutantes \texttt{NO\_COVERAGE} em zonas críticas selecionadas da camada \texttt{delegate};
+    \item capturar e incorporar no relatório os prints finais de JUnit, JaCoCo e PIT produzidos na última execução;
+    \item manter validação de regressão a cada iteração com \texttt{make full}.
+\end{itemize}
+
+\section{Conclusão}
+O trabalho evoluiu de uma suite funcional para uma abordagem de teste orientada a qualidade mensurável. A combinação de JUnit, JaCoCo, PIT, jqwik e automação permitiu:
+\begin{itemize}
+    \item elevar a confiança no núcleo funcional da aplicação;
+    \item identificar de forma objetiva onde os testes ainda não exercitam o sistema;
+    \item transformar resultados de ferramentas em ações concretas de melhoria.
+\end{itemize}
+
+Em síntese, o projeto encontra-se tecnicamente sólido para submissão, com evidência reprodutível e análise crítica alinhada ao enunciado ATS. A principal fronteira de melhoria futura está menos em adicionar testes indiscriminadamente e mais em aumentar a eficácia sobre mutantes sobreviventes e código ainda não coberto.
+
+\end{document}
