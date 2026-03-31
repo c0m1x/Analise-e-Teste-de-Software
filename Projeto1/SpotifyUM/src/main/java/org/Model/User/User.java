@@ -261,9 +261,20 @@ public class User implements Serializable{
             "  👤 Nome de Utilizador: " + username + "\n" +
             "  📧 Email: " + email + "\n" +
             "  🏠 Morada: " + adress + "\n" +
-            "  🔑 Password: " + "•".repeat(password.length()) + "\n" +
+            "  🔑 Password: " + maskPassword(password.length()) + "\n" +
             "  📋 Plano: " + plan + "\n" +
             "╚═══════════════════════════════════════════════════╝";
+    }
+
+    /**
+     * Mascara a password com o mesmo numero de caracteres.
+     */
+    private String maskPassword(int length) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append('•');
+        }
+        return sb.toString();
     }
 
     /**

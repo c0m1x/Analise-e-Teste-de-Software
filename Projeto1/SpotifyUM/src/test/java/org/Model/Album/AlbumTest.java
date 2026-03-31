@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ public class AlbumTest {
         assertEquals("", a.getName());
         assertEquals("", a.getArtist());
         // musics is null on default, setting new list
-        List<Music> list = List.of(m1);
+        List<Music> list = Collections.singletonList(m1);
         a.setMusics(list);
         List<Music> copy = a.getMusics();
         assertEquals(1, copy.size());
