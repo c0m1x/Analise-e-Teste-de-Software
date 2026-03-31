@@ -128,6 +128,37 @@ class StatsTest {
     }
 
     @Test
+    void getTopListenerFromDate() {
+        Song song1 = new Song("Song1", "Artist1", "Publisher1", "Lyrics1", "Notes1", "Rock", 180);
+        Song song2 = new Song("Song2", "Artist2", "Publisher2", "Lyrics2", "Notes2", "Pop", 240);
+
+        LocalDateTime base = LocalDateTime.of(2026, 3, 1, 10, 0, 0);
+
+        List<History> history1 = new ArrayList<>();
+        history1.add(new History(song1, base.minusDays(1))); // outside window
+        history1.add(new History(song1, base.plusDays(1)));  // inside window
+
+        List<History> history2 = new ArrayList<>();
+        history2.add(new History(song2, base));              // boundary (included)
+        history2.add(new History(song2, base.plusDays(2)));  // inside window
+        history2.add(new History(song2, base.plusDays(3)));  // inside window
+
+        User user1 = new User("User1", "user1@email.com", "Address1", new FreePlan(), "pass1", 50, history1);
+        User user2 = new User("User2", "user2@email.com", "Address2", new PremiumBase(), "pass2", 100, history2);
+
+        users.put("User1", user1);
+        users.put("User2", user2);
+
+        User topFromDate = Stats.getTopListenerFromDate(users, base);
+        assertNotNull(topFromDate);
+        assertEquals("User2", topFromDate.getName());
+
+        assertNull(Stats.getTopListenerFromDate(new HashMap<>(), base));
+        assertNull(Stats.getTopListenerFromDate(null, base));
+        assertNull(Stats.getTopListenerFromDate(users, null));
+    }
+
+    @Test
     void getUserWithMostPoints() {
         // Create users with different points
         User user1 = new User("User1", "user1@email.com", "Address1", new FreePlan(), "pass1", 50, new ArrayList<>());
@@ -247,5 +278,22 @@ class StatsTest {
         
         // Test with null playlists map
         assertNull(Stats.userWithMostPlaylists(null));
+    }
+
+    @Test
+    void userWithMostPlaylistsShouldIgnoreNullCreators() {
+        User user1 = new User("User1", "user1@email.com", "Address1", new FreePlan(), "pass1", 50, new ArrayList<>());
+        Song song = new Song("Song", "Artist", "Publisher", "Lyrics", "Notes", "Rock", 180);
+        List<Song> songs = Collections.singletonList(song);
+
+        Playlist valid = new Playlist(user1, "Valid", "Description", 0, "public", songs);
+        Playlist nullCreator = new Playlist(null, "NullCreator", "Description", 0, "public", songs);
+
+        playlists.put("Valid", valid);
+        playlists.put("NullCreator", nullCreator);
+
+        User result = Stats.userWithMostPlaylists(playlists);
+        assertNotNull(result);
+        assertEquals("User1", result.getName());
     }
 }

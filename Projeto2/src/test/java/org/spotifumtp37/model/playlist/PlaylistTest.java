@@ -195,9 +195,9 @@ class PlaylistTest {
         
         playlist.setSongs(newSongs);
         
-        // Should add to existing songs, not replace them (based on implementation)
+        // setSongs replaces the full internal list with clones of the provided songs.
         List<Song> updatedSongs = playlist.getSongs();
-        assertEquals(4, updatedSongs.size());
+        assertEquals(1, updatedSongs.size());
         assertTrue(updatedSongs.contains(newSong));
     }
 
