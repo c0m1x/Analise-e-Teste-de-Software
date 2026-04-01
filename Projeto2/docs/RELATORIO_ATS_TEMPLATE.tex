@@ -238,6 +238,82 @@ mvn test
 
 Resultado observado: execução concluída com sucesso (\texttt{exit=0}).
 
+\subsection{EvoSuite no Projeto 1: integração, diagnóstico e estado atual}
+Nesta iteração foi integrada a execução de EvoSuite no Projeto 1 (Maven), com foco em manter o escopo restrito a \texttt{Projeto1/SpotifyUM} e em registar as decisões técnicas tomadas.
+
+\subsubsection{Alterações aplicadas}
+Foram realizadas as seguintes alterações de configuração:
+\begin{itemize}
+    \item atualização de \texttt{pom.xml} com repositórios \texttt{https://www.evosuite.org/m2} em \texttt{repositories} e \texttt{pluginRepositories};
+    \item definição de \texttt{evosuite.version=1.0.3} (versão efetivamente disponível no repositório EvoSuite);
+    \item substituição da integração por plugin legado (que falhava na inicialização de classe) por execução \textit{standalone} do EvoSuite via \texttt{exec-maven-plugin};
+    \item parametrização de \texttt{cuts} e \texttt{search\_budget} para execução incremental por classe;
+    \item inclusão automática de \texttt{evosuite-tests} como fonte de testes com \texttt{build-helper-maven-plugin};
+    \item adição de dependências \texttt{junit:junit} e runtime EvoSuite para compilar/executar os testes gerados;
+    \item ajuste de compilação para Java 8 no Projeto 1, por compatibilidade do ecossistema EvoSuite 1.0.3;
+    \item ajustes de compatibilidade Java 8 em código fonte/testes (substituição de APIs Java 9+ como \texttt{List.of}, \texttt{Optional.isEmpty}, \texttt{String.repeat}).
+\end{itemize}
+
+\subsubsection{Comandos usados na validação}
+\begin{lstlisting}[caption={Validação de build normal e execução EvoSuite no Projeto 1},label={lst:proj1-evosuite-commands}]
+# build normal do Projeto 1
+mvn -f Projeto1/SpotifyUM/pom.xml clean test
+
+# execução EvoSuite (JDK 8)
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
+PATH="/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH" \
+mvn -f Projeto1/SpotifyUM/pom.xml -P evosuite \
+  -Devosuite.cuts=org.Model.Music.Music \
+  -Devosuite.searchBudgetInSeconds=30 \
+  clean test
+\end{lstlisting}
+
+\subsubsection{Diagnóstico da falha de geração}
+Na primeira integração (plugin legado), o EvoSuite reportou:
+\begin{itemize}
+    \item \texttt{WARN: failed to generate tests for <CUT>};
+    \item logs em \texttt{.evosuite/.../std\_err\_CLIENT.log} com \texttt{Error while initializing target class: java.lang.IllegalArgumentException}.
+\end{itemize}
+
+Após migração para execução standalone (classpath explícito em \texttt{target/classes}), a geração passou a produzir classes \texttt{\_ESTest} em \texttt{evosuite-tests}.
+
+\subsubsection{Estado atual}
+\begin{itemize}
+    \item \textbf{Concluído}: integração técnica do EvoSuite no Projeto 1 via profile Maven dedicado;
+    \item \textbf{Concluído}: execução reprodutível do profile \texttt{evosuite};
+    \item \textbf{Concluído}: geração efetiva de testes (ex.: \texttt{Music\_ESTest} e \texttt{Music\_ESTest\_scaffolding});
+    \item \textbf{Concluído}: execução da suite após geração com \texttt{BUILD SUCCESS}.
+\end{itemize}
+
+\subsubsection{Resultados finais obtidos}
+Na execução final validada para o Projeto 1, o EvoSuite gerou e executou com sucesso a suite da classe \texttt{org.Model.Music.Music}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lr}
+\toprule
+Métrica & Valor \\
+\midrule
+Classes testáveis alvo & 1 \\
+Coverage global & 0.99 \\
+Test suites geradas & 1 \\
+Teste gerados pelo EvoSuite & 48 \\
+Statements totais & 112 \\
+Tempo de esforço & 37 s \\
+Cobertura de linha & 100\% \\
+Cobertura de branch & 100\% \\
+Cobertura de exceções & 100\% \\
+Weak mutation score & 100\% \\
+Cobertura de output & 93\% \\
+Cobertura de métodos & 100\% \\
+Cobertura CBranch & 100\% \\
+\bottomrule
+\end{tabular}
+\caption{Resultados finais do EvoSuite no Projeto 1}
+\end{table}
+
+\noindent Os testes gerados foram exportados para \texttt{Projeto1/SpotifyUM/src/test/java} e executados com a suite principal do projeto, totalizando \textbf{184 testes} na execução final validada.
+
 \section{Projeto 2 — SpotifUM (Gradle)}
 \subsection{Arquitetura e Decisões}
 \subsubsection{Visão geral de classes}

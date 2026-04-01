@@ -1,6 +1,7 @@
 package org.View;
 
 import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.sound.sampled.Clip;
@@ -105,7 +106,7 @@ public class ReproductionMenu extends Menu {
             System.out.println("\n🚫 Música não encontrada.");
             return;
         }
-        List<String> musicList = List.of(musicName);
+        List<String> musicList = Arrays.asList(musicName);
         playMusicList(musicList, musicName);
     }
 
@@ -118,7 +119,7 @@ public class ReproductionMenu extends Menu {
         System.out.print("\n💿 Nome do álbum a reproduzir: ");
         String albumName = getScanner().nextLine();
         Optional<List<String>> musicNames = getController().getAlbumMusicNames(albumName);
-        if (musicNames.isEmpty()) {
+        if (!musicNames.isPresent()) {
             System.out.println("\n🚫 Álbum não encontrado.");
             return;
         }
@@ -144,7 +145,7 @@ public class ReproductionMenu extends Menu {
 
 
         Optional<List<String>> musicNames = this.getController().getPlaylistMusicNames(playlistId);
-        if (musicNames.isEmpty()) {
+        if (!musicNames.isPresent()) {
             System.out.println("\n🚫 Playlist não encontrada.");
             return;
         }
@@ -163,7 +164,7 @@ public class ReproductionMenu extends Menu {
      */
     public void playRandomPlaylist() {
         Optional<List<String>> musicNames = this.getController().getRandomPlaylistMusicNames();
-        if (musicNames.isEmpty()) {
+        if (!musicNames.isPresent()) {
             System.out.println("\n🚫 Não existem playlists aleatórias disponíveis.");
             return;
         }
@@ -188,7 +189,7 @@ public class ReproductionMenu extends Menu {
             duration = 60 * 60;
         }
         Optional<List<String>> musicNames = this.getController().getFavoritePlaylistMusicNames(explicit, duration);
-        if (musicNames.isEmpty()) {
+        if (!musicNames.isPresent()) {
             System.out.println("\n🚫 Não existem músicas disponíveis para a playlist.");
             return;
         }

@@ -9,32 +9,31 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.8.2</junit.version>
+        <evosuite.version>1.0.3</evosuite.version>
+        <evosuite.cuts>org.Model.SpotifUM,org.Model.Album.Album,org.Model.Music.Music,org.Model.Music.MusicMultimedia,org.Model.Music.MusicReproduction,org.Model.Plan.PlanFree,org.Model.Plan.PlanPremiumBase,org.Model.Plan.PlanPremiumTop,org.Model.Playlist.Playlist,org.Model.Playlist.PlaylistCreator,org.Model.Playlist.PlaylistFavorites,org.Model.Playlist.PlaylistRandom,org.Model.User.User</evosuite.cuts>
+        <evosuite.timeInMinutesPerClass>1</evosuite.timeInMinutesPerClass>
+        <evosuite.numberOfCores>4</evosuite.numberOfCores>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>evosuite</id>
+            <url>https://www.evosuite.org/m2</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>evosuite</id>
+            <url>https://www.evosuite.org/m2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencies>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>4.11.0</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Add JUnit 5 engine to ensure tests are discovered and run -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -58,8 +57,104 @@
                 <configuration>
                     <!-- Disable module path to work smoothly with JUnit 5 -->
                     <useModulePath>false</useModulePath>
+                    <argLine>--add-opens java.desktop/java.awt=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-exports java.base/sun.net.util=ALL-UNNAMED</argLine>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Tests.java</include>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*ESTest.java</include>
+                    </includes>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>tests-junit5</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-api</artifactId>
+                    <version>${junit.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                    <version>4.11.0</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.junit.jupiter</groupId>
+                    <artifactId>junit-jupiter-engine</artifactId>
+                    <version>${junit.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                        <dependency>
+                            <groupId>org.junit.vintage</groupId>
+                            <artifactId>junit-vintage-engine</artifactId>
+                            <version>${junit.version}</version>
+                            <scope>test</scope>
+                        </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>evosuite-generate</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.evosuite.plugins</groupId>
+                        <artifactId>evosuite-maven-plugin</artifactId>
+                        <version>${evosuite.version}</version>
+                        <configuration>
+                            <cuts>${evosuite.cuts}</cuts>
+                            <projectCP>${project.build.outputDirectory}</projectCP>
+                            <timeInMinutesPerClass>${evosuite.timeInMinutesPerClass}</timeInMinutesPerClass>
+                            <numberOfCores>${evosuite.numberOfCores}</numberOfCores>
+                            <assertions>true</assertions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>evosuite-generate-tests</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>generate</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>evosuite-export-tests</id>
+                                <phase>process-test-sources</phase>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>evosuite-runtime</id>
+            <dependencies>
+                <dependency>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                    <version>4.13.2</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.evosuite</groupId>
+                    <artifactId>evosuite-standalone-runtime</artifactId>
+                    <version>${evosuite.version}</version>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>
