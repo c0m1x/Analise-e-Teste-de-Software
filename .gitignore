@@ -1,0 +1,57 @@
+# ------------------------------------------------------------
+# Java / build artifacts (Projetos 1 e 2)
+# ------------------------------------------------------------
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+**/target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+
+# Gradle
+**/.gradle/
+**/build/
+
+# JaCoCo / PIT / test reports (generated)
+**/jacoco*.exec
+**/jacoco*.xml
+**/jacoco*.csv
+**/surefire-reports/
+**/failsafe-reports/
+**/pit-reports/
+**/reports/
+
+# ------------------------------------------------------------
+# IDE / editor
+# ------------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+.vscode/
+
+# ------------------------------------------------------------
+# OS / misc
+# ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+
+# ------------------------------------------------------------
+# Model/diagram backup/lock files (não essenciais)
+# ------------------------------------------------------------
+*.vpp.bak*
+*.vpp.lck
+*.lck
