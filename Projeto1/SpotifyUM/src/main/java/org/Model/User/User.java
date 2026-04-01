@@ -256,12 +256,13 @@ public class User implements Serializable{
      * @return String com os dados do utilizador.
      */
     public String toString() {
-        return 
+        String hiddenPassword = new String(new char[password.length()]).replace('\0', '•');
+        return
             "╔═══════════════ DADOS DO UTILIZADOR ═══════════════╗\n" +
             "  👤 Nome de Utilizador: " + username + "\n" +
             "  📧 Email: " + email + "\n" +
             "  🏠 Morada: " + adress + "\n" +
-            "  🔑 Password: " + "•".repeat(password.length()) + "\n" +
+            "  🔑 Password: " + hiddenPassword + "\n" +
             "  📋 Plano: " + plan + "\n" +
             "╚═══════════════════════════════════════════════════╝";
     }

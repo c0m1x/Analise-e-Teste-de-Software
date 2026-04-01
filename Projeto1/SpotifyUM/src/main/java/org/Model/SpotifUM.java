@@ -1106,25 +1106,25 @@ public class SpotifUM implements Serializable {
                      billieJean, beatIt, hinoPorto,neverGonnaGiveYouUp).forEach(m -> musics.put(m.getName(), m));
     
         // ================================== ÁLBUNS ==================================
-        Album divide = new Album("Divide", "Ed Sheeran", List.of(shapeOfYou));
-        Album afterHours = new Album("After Hours", "The Weeknd", List.of(blindingLights));
-        Album futureNostalgia = new Album("Future Nostalgia", "Dua Lipa", List.of(levitating, dontStartNow));
-        Album fineLine = new Album("Fine Line", "Harry Styles", List.of(watermelonSugar));
-        Album nightAtTheOpera = new Album("A Night at the Opera", "Queen", List.of(bohemian));
-        Album ledZeppelinIV = new Album("Led Zeppelin IV", "Led Zeppelin", List.of(stairway));
-        Album appetiteForDestruction = new Album("Appetite for Destruction", "Guns N' Roses", List.of(sweetChildOMine));
-        Album hotelCaliforniaAlbum = new Album("Hotel California", "Eagles", List.of(hotelCalifornia));
-        Album nevermind = new Album("Nevermind", "Nirvana", List.of(smellsLikeTeenSpirit));
-        Album astroworld = new Album("ASTROWORLD", "Travis Scott", List.of(sickoMode));
-        Album scorpion = new Album("Scorpion", "Drake", List.of(godPlan));
-        Album damn = new Album("DAMN.", "Kendrick Lamar", List.of(humble));
-        Album marshallMathersLP2 = new Album("The Marshall Mathers LP 2", "Eminem", List.of(rapGod));
-        Album starboyAlbum = new Album("Starboy", "The Weeknd", List.of(starboy));
-        Album discovery = new Album("Discovery", "Daft Punk", List.of(oneMoreTime));
-        Album nothingButTheBeat = new Album("Nothing but the Beat", "David Guetta", List.of(titanium));
-        Album thriller = new Album("Thriller", "Michael Jackson", List.of(billieJean, beatIt));
-        Album tantoPorto = new Album("Tanto Porto!", "FC Porto", List.of(hinoPorto));
-        Album rickRoll = new Album("Rick Roll", "Rick Astley", List.of(neverGonnaGiveYouUp));
+        Album divide = new Album("Divide", "Ed Sheeran", Arrays.asList(shapeOfYou));
+        Album afterHours = new Album("After Hours", "The Weeknd", Arrays.asList(blindingLights));
+        Album futureNostalgia = new Album("Future Nostalgia", "Dua Lipa", Arrays.asList(levitating, dontStartNow));
+        Album fineLine = new Album("Fine Line", "Harry Styles", Arrays.asList(watermelonSugar));
+        Album nightAtTheOpera = new Album("A Night at the Opera", "Queen", Arrays.asList(bohemian));
+        Album ledZeppelinIV = new Album("Led Zeppelin IV", "Led Zeppelin", Arrays.asList(stairway));
+        Album appetiteForDestruction = new Album("Appetite for Destruction", "Guns N' Roses", Arrays.asList(sweetChildOMine));
+        Album hotelCaliforniaAlbum = new Album("Hotel California", "Eagles", Arrays.asList(hotelCalifornia));
+        Album nevermind = new Album("Nevermind", "Nirvana", Arrays.asList(smellsLikeTeenSpirit));
+        Album astroworld = new Album("ASTROWORLD", "Travis Scott", Arrays.asList(sickoMode));
+        Album scorpion = new Album("Scorpion", "Drake", Arrays.asList(godPlan));
+        Album damn = new Album("DAMN.", "Kendrick Lamar", Arrays.asList(humble));
+        Album marshallMathersLP2 = new Album("The Marshall Mathers LP 2", "Eminem", Arrays.asList(rapGod));
+        Album starboyAlbum = new Album("Starboy", "The Weeknd", Arrays.asList(starboy));
+        Album discovery = new Album("Discovery", "Daft Punk", Arrays.asList(oneMoreTime));
+        Album nothingButTheBeat = new Album("Nothing but the Beat", "David Guetta", Arrays.asList(titanium));
+        Album thriller = new Album("Thriller", "Michael Jackson", Arrays.asList(billieJean, beatIt));
+        Album tantoPorto = new Album("Tanto Porto!", "FC Porto", Arrays.asList(hinoPorto));
+        Album rickRoll = new Album("Rick Roll", "Rick Astley", Arrays.asList(neverGonnaGiveYouUp));
 
         // Adiciona álbuns ao map
         Arrays.asList(divide, afterHours, futureNostalgia, fineLine, nightAtTheOpera,
@@ -1134,23 +1134,23 @@ public class SpotifUM implements Serializable {
     
         // ================================== PLAYLISTS PÚBLICAS ==================================
         Playlist topGlobal = new Playlist("Top Global", "Spotify", 
-            List.of(shapeOfYou, blindingLights, levitating, godPlan, starboy));
-            
+            Arrays.asList(shapeOfYou, blindingLights, levitating, godPlan, starboy));
+
         Playlist rockLegends = new Playlist("Rock Legends", "RockFM", 
-            List.of(bohemian, stairway, sweetChildOMine, hotelCalifornia, smellsLikeTeenSpirit));
-            
+            Arrays.asList(bohemian, stairway, sweetChildOMine, hotelCalifornia, smellsLikeTeenSpirit));
+
         Playlist hipHopNation = new Playlist("Hip-Hop Nation", "HipHopTV", 
-            List.of(sickoMode, godPlan, humble, rapGod));
-            
+            Arrays.asList(sickoMode, godPlan, humble, rapGod));
+
         Playlist electronicVibes = new Playlist("Electronic Vibes", "EDM.com", 
-            List.of(starboy, oneMoreTime, titanium));
-            
+            Arrays.asList(starboy, oneMoreTime, titanium));
+
         Playlist throwbackHits = new Playlist("Throwback Hits", "OldiesFM", 
-            List.of(billieJean, beatIt, hotelCalifornia, bohemian));
-            
+            Arrays.asList(billieJean, beatIt, hotelCalifornia, bohemian));
+
         Playlist portuguesePride = new Playlist("Portuguese Pride", "RTP", 
-            List.of(hinoPorto));
-    
+            Arrays.asList(hinoPorto));
+
         // Adiciona playlists públicas
         Arrays.asList(topGlobal, rockLegends, hipHopNation, electronicVibes, throwbackHits, portuguesePride)
               .forEach(p -> publicPlaylists.put(p.getId(), p));
@@ -1159,13 +1159,13 @@ public class SpotifUM implements Serializable {
         // (Mantido igual ao original)
         User premiumUser = new User("simao", "love@music.com", "Avenida Central", 
             "root", new PlanPremiumBase(), Arrays.asList(
-                new Playlist("My Mix", "simao", List.of(sickoMode, bohemian)),
-                new Playlist("Tesouros Portugueses", "simao", List.of(hinoPorto))
+                new Playlist("My Mix", "simao", Arrays.asList(sickoMode, bohemian)),
+                new Playlist("Tesouros Portugueses", "simao", Arrays.asList(hinoPorto))
             ), new ArrayList<>());
     
         User freeUser = new User("gabriel", "student@uni.com", "Campus Residence", 
             "root", new PlanFree(), Arrays.asList(
-                new Playlist("Study Time", "gabriel", List.of(bohemian, stairway))
+                new Playlist("Study Time", "gabriel", Arrays.asList(bohemian, stairway))
             ), new ArrayList<>());
     
         User artistAccount = new User("jose", "weeknd@xo.com", "Los Angeles", 
