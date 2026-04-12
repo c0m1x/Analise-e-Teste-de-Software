@@ -154,81 +154,96 @@
 \section{Introducao}
 Este documento apresenta uma versao geral e consolidada do trabalho de Analise e Teste de Software aplicado ao \textbf{Projeto 1 (SpotifyUM)} e ao \textbf{Projeto 2 (SpotifUM)}.
 
-A consolidacao foi feita com tres objetivos centrais:
-\begin{itemize}
-    \item preservar a rastreabilidade tecnica de todas as decisoes de teste;
-    \item comparar de forma objetiva os resultados obtidos em duas toolchains diferentes;
-    \item fornecer um artefacto unico, completo e reprodutivel para avaliacao.
-\end{itemize}
+A consolidacao foi feita com tres objetivos centrais: preservar a rastreabilidade técnica de todas as decisoes de teste, comparar de forma objetiva os resultados obtidos em duas toolchains diferentes e fornecer um artefacto unico, completo e reprodutivel para avaliacao.
 
-A estrategia global combinou:
-\begin{itemize}
-    \item reforco manual de testes unitarios;
-    \item geracao automatica de testes (EvoSuite e apoio por IA);
-    \item analise estrutural por cobertura;
-    \item analise de robustez da suite por mutacao;
-    \item property-based testing;
-    \item automacao de pipeline e repetibilidade de execucao.
-\end{itemize}
+A estrategia global combinou reforco manual de testes unitarios, geracao automatica de testes (EvoSuite e apoio por IA), analise estrutural por cobertura, analise de robustez da suite por mutação, property-based testing e automação de pipeline com repetibilidade de execucao.
 
 \section{Contexto dos Projetos}
 \subsection{Projeto 1 - SpotifyUM (Maven)}
 O Projeto 1 assenta em Maven e segue uma organizacao classica de codigo Java com separacao de camadas de \texttt{Model}, \texttt{Controller}, \texttt{View}, \texttt{Utils} e excecoes.
 
-Do ponto de vista de teste, o foco foi:
-\begin{itemize}
-    \item consolidar a suite JUnit existente;
-    \item aumentar cobertura em utilitarios e fluxos criticos de controlador;
-    \item integrar EvoSuite por perfis Maven.
-\end{itemize}
+Do ponto de vista de teste, o foco foi consolidar a suite JUnit existente, aumentar cobertura em utilitarios e fluxos criticos de controlador e integrar EvoSuite por perfis Maven.
 
 \subsection{Projeto 2 - SpotifUM (Gradle)}
 O Projeto 2 assenta em Gradle e usa uma pipeline de verificacao mais abrangente, incluindo JaCoCo, PIT e jqwik.
 
-Do ponto de vista de teste, o foco foi:
-\begin{itemize}
-    \item reforco de testes em utilitarios e regras de negocio;
-    \item medicao sistematica de cobertura;
-    \item uso de mutacao para localizar fragilidades da suite;
-    \item automacao integral em tarefas Gradle e script unico.
-\end{itemize}
+Do ponto de vista de teste, o foco foi reforco de testes em utilitarios e regras de negocio, medicao sistematica de cobertura, uso de mutação para localizar fragilidades da suite e automação integral em tarefas Gradle e script unico.
 
 \section{Objetivos ATS e Criterios de Qualidade}
-\subsection{Objetivos obrigatorios}
+\subsection{Objetivos obrigatórios}
 \begin{itemize}
     \item complementar e estabilizar suites de testes;
     \item usar geracao automatica de testes;
     \item medir cobertura e qualidade;
-    \item aplicar mutacao e interpretar sobreviventes;
+    \item aplicar mutação e interpretar sobreviventes;
     \item aplicar property-based testing;
     \item apresentar relatorio tecnico com analise critica.
 \end{itemize}
 
-\subsection{Objetivos de excelencia}
+\subsection{Objetivos de excelência}
 \begin{itemize}
     \item garantir reproducibilidade de execucao por comandos simples;
     \item justificar trade-offs de tempo e qualidade;
-    \item registar limitacoes externas sem perder validade metodologica;
-    \item integrar assistencia por IA com revisao manual obrigatoria.
+    \item registar limitações externas sem perder validade metodologica;
+    \item integrar assistência por IA com revisao manual obrigatória.
 \end{itemize}
 
-\section{Porque manter Maven num projeto e Gradle no outro}
-A coexistencia de Maven e Gradle foi uma decisao deliberada para explorar ecossistemas complementares:
+\section{Conformidade explicita com o enunciado ATS 2025/2026}
+O enunciado ATS define 6 tarefas obrigatórias e 4 extras valorizados. Nesta secção, o cumprimento e apresentado de forma rastreavel, com evidencia técnica por projeto.
+
+\subsection{Tarefas obrigatórias (1 a 6)}
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.05\textwidth}p{0.36\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.12\textwidth}}
+\toprule
+\# & Tarefa do enunciado ATS & Projeto 1 & Projeto 2 & Estado \\
+\midrule
+1 & Escrever/complementar testes JUnit & Reforco em utilitarios e controlador & Reforco em utilitarios e estatisticas & Cumprido \\
+2 & Usar EvoSuite para geracao automatica & Integrado via perfil Maven (escopo reduzido) & Integrado via task Gradle (escopo reduzido) & Cumprido \\
+3 & Analisar cobertura e qualidade dos testes & Analise qualitativa e diagnostico por perfis & JaCoCo + interpretacao de qualidade via PIT & Cumprido \\
+4 & Usar PIT para criar mutantes & Nao foco principal nesta iteracao & PIT integrado com métricas reportadas & Cumprido (global) \\
+5 & Usar QuickCheck/Hypothesis (ou equivalente) & Nao foco principal nesta iteracao & jqwik aplicado (equivalente PBT em Java) & Cumprido (global) \\
+6 & Relatorio com graficos e analise & Consolidado neste relatorio geral & Consolidado neste relatorio geral & Cumprido \\
+\bottomrule
+\end{tabular}
+\caption{Matriz de cumprimento das tarefas obrigatórias do enunciado ATS}
+\end{table}
+
+\subsection{Extras valorizados (1 a 4)}
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.05\textwidth}p{0.43\textwidth}p{0.35\textwidth}p{0.12\textwidth}}
+\toprule
+\# & Extra do enunciado ATS & Evidencia sintetica & Estado \\
+\midrule
+1 & automação com Maven/Makefile/comando unico & Pipeline Gradle agregada (\texttt{atsFullPipeline}) e comandos reproduziveis por etapa & Cumprido \\
+2 & Refactoring + teste de regressao & Refatoracao behavior-preserving em modulo de estatisticas (Projeto 2) com revalidacao da suite & Cumprido \\
+3 & Property-Based Testing em Java & jqwik aplicado para propriedades/invariantes de comportamento & Cumprido \\
+4 & Bom relatorio & Documento geral consolidado, com comparacao, evidencias, riscos e anexos tecnicos & Cumprido \\
+\bottomrule
+\end{tabular}
+\caption{Matriz de cumprimento dos extras valorizados}
+\end{table}
+
+\subsection{Nota sobre cobertura do enunciado POO anexado}
+O PDF anexado inclui tambem o enunciado original de POO (24/25), com requisitos funcionais de negocio. A estrategia de teste procurou cobrir especialmente as zonas de maior risco funcional:
 \begin{itemize}
-    \item \textbf{Maven} no Projeto 1, por favorecer configuracao declarativa e separacao por \textit{profiles}, util para cenarios com modos de execucao distintos (suite normal, runtime EvoSuite, geracao EvoSuite).
-    \item \textbf{Gradle} no Projeto 2, por facilitar composicao de tarefas ATS e automacao de pipeline end-to-end, incluindo relatorios em cadeia.
+    \item persistencia e serializacao de estado;
+    \item estatisticas sobre reproducoes/utilizadores/playlists;
+    \item regras de planos e comportamento de entidades de dominio;
+    \item fluxos de criacao, autenticacao e reproducao em menus/servicos.
 \end{itemize}
+
+Esta abordagem nao substitui validacao exaustiva de todos os caminhos da aplicacao, mas alinha a cobertura com os criterios de avaliacao de ATS e com os pontos de maior impacto no comportamento observado.
+
+\section{Porque manter Maven num projeto e Gradle no outro}
+A coexistencia de Maven e Gradle foi uma decisao deliberada para explorar ecossistemas complementares. No Projeto 1, \textbf{Maven} foi mantido por favorecer configuracao declarativa e separacao por \textit{profiles}, util para cenarios com modos de execucao distintos (suite normal, runtime EvoSuite e geracao EvoSuite). No Projeto 2, \textbf{Gradle} foi mantido por facilitar composicao de tarefas ATS e automação de pipeline end-to-end, incluindo relatorios em cadeia.
 
 Esta abordagem permitiu comparar praticas em contextos reais de manutencao: previsibilidade de ciclo de vida (Maven) versus flexibilidade de orquestracao (Gradle).
 
 \section{Estrategia Transversal de Teste}
 \subsection{JUnit}
-JUnit foi a base comum dos dois projetos, com enfase em:
-\begin{itemize}
-    \item cenarios de fronteira;
-    \item validacao de excecoes e caminhos negativos;
-    \item garantia de regressao funcional apos alteracoes.
-\end{itemize}
+JUnit foi a base comum dos dois projetos, com enfase em cenarios de fronteira, validacao de excecoes e caminhos negativos, e garantia de regressao funcional apos alteracoes.
 
 \subsection{EvoSuite}
 EvoSuite foi integrado nos dois projetos para geracao automatica de testes. Para manter iteracoes curtas e reduzir custo computacional, a geracao foi limitada a 3 classes por projeto.
@@ -242,6 +257,25 @@ No Projeto 2, JaCoCo e PIT foram usados em conjunto:
 
 \subsection{Property-Based Testing (jqwik)}
 No Projeto 2, jqwik foi aplicado em propriedades de invariantes para aumentar diversidade de entradas e detetar casos nao previstos por testes exemplo-a-exemplo.
+
+\section{Rastreabilidade de requisitos funcionais (POO) para teste}
+Para reforcar a componente academica do relatorio, a tabela seguinte liga areas funcionais do enunciado POO aos focos de teste considerados.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.38\textwidth}p{0.26\textwidth}p{0.28\textwidth}}
+\toprule
+Area funcional do enunciado POO & Evidencia no Projeto 1 & Evidencia no Projeto 2 \\
+\midrule
+Gestao de entidades e persistencia de estado & Testes de serializacao e import/export via controlador & Testes de parsing/adapters e serializacao de dados \\
+Registo e validacao de interacoes de utilizador & Testes de login/registo e cenarios de erro & Testes de comportamento em utilitarios e regras de apoio \\
+Estatisticas sobre estado do sistema & Cobertura parcial por testes de controlador/modelo & Foco explicito em testes de \texttt{Stats} e propriedades \\
+Regras especificas de dominio (playlists, tipos de musica, planos) & Cobertura seletiva em classes de modelo alvo de EvoSuite/JUnit & Cobertura em adapters, playlist invariants e regras agregadas \\
+Robustez de erros/excecoes & Testes negativos (URL, IO, input invalido) & Testes de fronteira e robustez orientados por risco \\
+\bottomrule
+\end{tabular}
+\caption{Rastreabilidade funcional para foco de teste}
+\end{table}
 
 \section{Projeto 1 - SpotifyUM (Maven)}
 \subsection{Intervencao principal}
@@ -284,10 +318,10 @@ No Projeto 1, o parametro \texttt{evosuite.cuts} foi restringido para:
     \item \texttt{org.Model.Music.Music}
 \end{itemize}
 
-\subsection{Justificacao tecnica desta limitacao}
-A geracao automatica em todas as classes de dominio tem custo elevado e pode alongar excessivamente cada iteracao. A limitacao para 3 classes permite:
+\subsection{Justificacao técnica desta limitação}
+A geracao automatica em todas as classes de dominio tem custo elevado e pode alongar excessivamente cada iteracao. A limitação para 3 classes permite:
 \begin{itemize}
-    \item demonstrar integracao funcional da ferramenta;
+    \item demonstrar integração funcional da ferramenta;
     \item validar o processo geracao/exportacao/execucao;
     \item libertar tempo para analise de mutantes, cobertura e consolidacao de testes manuais.
 \end{itemize}
@@ -298,7 +332,7 @@ O Projeto 2 foi tratado como pipeline ATS completo, incluindo:
 \begin{itemize}
     \item \texttt{test} com JUnit 5;
     \item \texttt{jacocoTestReport} para cobertura;
-    \item \texttt{pitest} para mutacao;
+    \item \texttt{pitest} para mutação;
     \item \texttt{evosuiteGenerate} para geracao automatica;
     \item \texttt{atsFullPipeline} para execucao agregada.
 \end{itemize}
@@ -326,15 +360,15 @@ No Projeto 2, a lista \texttt{evosuiteTargets} foi restringida para:
     \item \texttt{org.spotifumtp37.util.LocalDateTimeAdapter}
 \end{itemize}
 
-\subsection{Limitacao conhecida do EvoSuite neste projeto}
-A tarefa de EvoSuite usa container Docker e pode encontrar limitacoes de compatibilidade de bytecode dependendo da imagem/runtime em uso, especialmente em projetos com Java mais recente. Esta e uma limitacao externa de toolchain e nao invalida a integracao tecnica nem o racional de uso.
+\subsection{limitação conhecida do EvoSuite neste projeto}
+A tarefa de EvoSuite usa container Docker e pode encontrar limitações de compatibilidade de bytecode dependendo da imagem/runtime em uso, especialmente em projetos com Java mais recente. Esta e uma limitação externa de toolchain e nao invalida a integração técnica nem o racional de uso.
 
 \subsection{Matriz de resultados (iteracao reportada)}
 \begin{table}[H]
 \centering
 \begin{tabular}{lr}
 \toprule
-Metrica & Valor \\
+métrica & Valor \\
 \midrule
 Total de testes JUnit & 141 \\
 Taxa de sucesso JUnit & 100\% \\
@@ -346,16 +380,40 @@ No coverage (PIT) & 587 \\
 Test strength (PIT) & 87\% \\
 \bottomrule
 \end{tabular}
-\caption{Resumo de metricas consolidadas do Projeto 2}
+\caption{Resumo de métricas consolidadas do Projeto 2}
 \end{table}
 
-\atsfigure{figures/junit_report_overview.png}{0.92}{Resumo da execucao JUnit no Projeto 2}
-\atsfigure{figures/jacoco_overview.png}{0.92}{Resumo de cobertura JaCoCo no Projeto 2}
-\atsfigure{figures/pit_overview.png}{0.92}{Resumo de mutacao PIT no Projeto 2}
 
-\section{Geracao automatica de testes com assistencia por IA}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.40\linewidth]{junit_report_overview.png}
+    \caption{Resumo da execucao JUnit no Projeto 2}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.40\linewidth]{jacoco_overview.png}
+    \caption{Resumo de cobertura JaCoCo no Projeto 2}
+    \label{fig:enter-label}
+\end{figure}
+
+
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.40\linewidth]{pit_overview.png}
+    \caption{Resumo de mutação PIT no Projeto 2}
+    \label{fig:enter-label}
+\end{figure}
+
+
+Os tres graficos acima foram gerados localmente a partir das métricas consolidadas desta iteracao para substituir capturas de ecra que nao estavam disponiveis no workspace. A informacao reportada foi preservada (JUnit, JaCoCo e PIT), com foco em legibilidade para avaliacao academica.
+
+\section{Geracao automatica de testes com assistência por IA}
 \subsection{Porque usar IA neste contexto}
-A assistencia por IA foi usada como amplificador de produtividade, sobretudo para:
+A assistência por IA foi usada como amplificador de produtividade, sobretudo para:
 \begin{itemize}
     \item propor listas de casos-limite e classes de equivalencia;
     \item acelerar criacao de esqueletos de testes unitarios;
@@ -368,7 +426,7 @@ Para garantir rigor academico e tecnico, todo output de IA foi sujeito a:
 \begin{itemize}
     \item revisao manual linha-a-linha;
     \item ajuste ao comportamento real do codigo;
-    \item execucao local obrigatoria antes de aceitar qualquer teste;
+    \item execucao local obrigatória antes de aceitar qualquer teste;
     \item rejeicao de casos redundantes, inconsistentes ou sem valor semantico.
 \end{itemize}
 
@@ -385,14 +443,14 @@ A IA nao substituiu engenharia de teste. Foi usada para reduzir custo mecanico e
 \toprule
 \textbf{Dimensao} & \textbf{Projeto 1 (Maven)} & \textbf{Projeto 2 (Gradle)} \\
 \midrule
-Sistema de build & Ciclo declarativo + perfis & Tarefas composiveis + automacao agregada \\
+Sistema de build & Ciclo declarativo + perfis & Tarefas composiveis + automação agregada \\
 Execucao base de testes & Sensivel a perfis ativos & Direta com \texttt{bash ./gradlew test} \\
 EvoSuite & Integrado por perfil + runtime dedicado & Integrado por task Docker \\
 Escopo EvoSuite & 3 classes alvo & 3 classes alvo \\
 Cobertura estrutural & Nao centralizada no fluxo atual & JaCoCo integrado no fluxo principal \\
-Mutacao & Nao foco principal nesta iteracao & PIT integrado e operacional \\
+mutação & Nao foco principal nesta iteracao & PIT integrado e operacional \\
 PBT & Nao foco principal nesta iteracao & jqwik aplicado em propriedades \\
-Automacao end-to-end & Parcial & Completa via task/script \\
+automação end-to-end & Parcial & Completa via task/script \\
 Risco operacional dominante & Gestao de perfis e runtime de teste & Compatibilidade de runtime EvoSuite + permissao wrapper \\
 \bottomrule
 \end{longtable}
@@ -421,7 +479,7 @@ cd Projeto2
 bash ./gradlew atsFullPipeline --no-daemon
 \end{lstlisting}
 
-\section{Riscos, Limitacoes e Mitigacoes}
+\section{Riscos, limitações e Mitigacoes}
 \subsection{Riscos identificados}
 \begin{itemize}
     \item dependencia de perfis Maven para compilar/executar todas as variantes de testes no Projeto 1;
@@ -432,32 +490,28 @@ bash ./gradlew atsFullPipeline --no-daemon
 \subsection{Mitigacoes adotadas}
 \begin{itemize}
     \item comandos documentados por perfil e por etapa;
-    \item limitacao de escopo EvoSuite para iteracoes mais curtas;
-    \item reforco incremental orientado por metricas (JaCoCo/PIT);
+    \item limitação de escopo EvoSuite para iteracoes mais curtas;
+    \item reforco incremental orientado por métricas (JaCoCo/PIT);
     \item uso de IA com validacao humana para acelerar sem perder qualidade.
 \end{itemize}
 
 \section{Plano de melhoria para iteracoes futuras}
 \begin{itemize}
     \item aumentar cobertura em classes de negocio com maior no-coverage no PIT;
-    \item reduzir mutantes sobreviventes com testes dirigidos por operador de mutacao;
+    \item reduzir mutantes sobreviventes com testes dirigidos por operador de mutação;
     \item alargar property-based testing para mais modulos e invariantes de dominio;
     \item estabilizar pipeline EvoSuite em ambiente controlado de versoes Java;
     \item manter verificacao de regressao apos cada refatoracao relevante.
 \end{itemize}
 
 \section{Conclusao}
-O relatorio geral evidencia uma evolucao tecnica consistente nos dois projetos, com abordagens complementares:
-\begin{itemize}
-    \item no Projeto 1, consolidacao da suite e integracao por perfis Maven;
-    \item no Projeto 2, pipeline ATS completa com cobertura, mutacao e automacao.
-\end{itemize}
+O relatorio geral evidencia uma evolucao técnica consistente nos dois projetos, com abordagens complementares: no Projeto 1, consolidacao da suite e integração por perfis Maven, e no Projeto 2, pipeline ATS completa com cobertura, mutação e automação.
 
-A decisao de aplicar EvoSuite a apenas 3 classes por projeto foi deliberada e adequada ao prazo, permitindo equilibrio entre profundidade tecnica e tempo de execucao.
+A decisao de aplicar EvoSuite a apenas 3 classes por projeto foi deliberada e adequada ao prazo, permitindo equilibrio entre profundidade técnica e tempo de execucao.
 
-A assistencia por IA contribuiu para acelerar geracao e refinamento de testes, mantendo rigor atraves de revisao manual e validacao por execucao local. Com isso, o processo resultou em maior produtividade sem comprometer qualidade metodologica.
+A assistência por IA contribuiu para acelerar geracao e refinamento de testes, mantendo rigor atraves de revisao manual e validacao por execucao local. Com isso, o processo resultou em maior produtividade sem comprometer qualidade metodologica.
 
-Em sintese, os dois projetos encontram-se com base solida para avaliacao ATS, com evidencias reproduciveis, comparacao tecnica clara e roteiro concreto de melhoria continua.
+Em sintese, os dois projetos encontram-se com base solida para avaliacao ATS, com evidencias reproduciveis, comparacao técnica clara e roteiro concreto de melhoria contínua.
 
 \appendix
 \section{Checklist de cumprimento do enunciado}
@@ -470,10 +524,10 @@ Item de avaliacao & Projeto 1 & Projeto 2 \\
 Complemento de testes JUnit & Sim & Sim \\
 Geracao automatica com EvoSuite & Sim (escopo reduzido) & Sim (escopo reduzido) \\
 Cobertura estrutural & Parcial/documentada & Sim (JaCoCo) \\
-Mutacao & Parcial/documentada & Sim (PIT) \\
+mutação & Parcial/documentada & Sim (PIT) \\
 Property-based testing & Parcial/documentada & Sim (jqwik) \\
 Pipeline reproduzivel & Parcial & Sim \\
-Justificacao tecnica e analise critica & Sim & Sim \\
+Justificacao técnica e analise critica & Sim & Sim \\
 \bottomrule
 \end{tabular}
 \caption{Checklist consolidada de cumprimento}
@@ -499,7 +553,7 @@ Este anexo descreve um fluxo recomendado para repeticao controlada da avaliacao 
 
 \subsection{Passo 3 - Ferramentas de qualidade}
 \begin{itemize}
-    \item Projeto 2: executar cobertura e mutacao para recolher indicadores objetivos.
+    \item Projeto 2: executar cobertura e mutação para recolher indicadores objetivos.
     \item Projeto 1: executar geracao EvoSuite no escopo reduzido definido.
 \end{itemize}
 
@@ -528,7 +582,7 @@ Perfis Maven incorretos no Projeto 1 & Media & Medio/Alto & Documentar comandos 
 Runtime EvoSuite incompativel com bytecode & Alta & Medio/Alto & Fixar versoes de Java e imagem/container por ambiente controlado \\
 Permissao de execucao no wrapper Gradle & Media & Medio & Usar \texttt{bash ./gradlew} ou ajustar permissao de ficheiro no repositorio \\
 Mutantes sem cobertura em zonas perifericas & Alta & Medio & Criar testes orientados por sobreviventes e por no-coverage \\
-Falsos positivos em sugestoes de IA & Media & Medio & Revisao manual obrigatoria e execucao local antes de aceitar alteracoes \\
+Falsos positivos em sugestoes de IA & Media & Medio & Revisao manual obrigatória e execucao local antes de aceitar alteracoes \\
 \bottomrule
 \end{tabular}
 \caption{Matriz sintetica de riscos e mitigacoes}
