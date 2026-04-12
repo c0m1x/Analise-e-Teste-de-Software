@@ -54,8 +54,7 @@ pitest {
 val evosuiteTargets = listOf(
     "org.spotifumtp37.util.SongTypeAdapter",
     "org.spotifumtp37.util.SubscriptionPlanAdapter",
-    "org.spotifumtp37.util.LocalDateTimeAdapter",
-    "org.spotifumtp37.util.JsonDataParser"
+    "org.spotifumtp37.util.LocalDateTimeAdapter"
 )
 
 tasks.register("evosuiteGenerate") {

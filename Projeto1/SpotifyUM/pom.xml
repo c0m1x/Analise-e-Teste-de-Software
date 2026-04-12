@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.8.2</junit.version>
         <evosuite.version>1.0.3</evosuite.version>
-        <evosuite.cuts>org.Model.SpotifUM,org.Model.Album.Album,org.Model.Music.Music,org.Model.Music.MusicMultimedia,org.Model.Music.MusicReproduction,org.Model.Plan.PlanFree,org.Model.Plan.PlanPremiumBase,org.Model.Plan.PlanPremiumTop,org.Model.Playlist.Playlist,org.Model.Playlist.PlaylistCreator,org.Model.Playlist.PlaylistFavorites,org.Model.Playlist.PlaylistRandom,org.Model.User.User</evosuite.cuts>
+        <evosuite.cuts>org.Model.SpotifUM,org.Model.Album.Album,org.Model.Music.Music</evosuite.cuts>
         <evosuite.timeInMinutesPerClass>1</evosuite.timeInMinutesPerClass>
         <evosuite.numberOfCores>4</evosuite.numberOfCores>
     </properties>
