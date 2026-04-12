@@ -214,7 +214,7 @@ O enunciado ATS define 6 tarefas obrigatórias e 4 extras valorizados. Nesta sec
 \centering
 \begin{tabular}{p{0.05\textwidth}p{0.43\textwidth}p{0.35\textwidth}p{0.12\textwidth}}
 \toprule
-\# & Extra do enunciado ATS & Evidencia sintetica & Estado \\
+\# & Extra do enunciado ATS & Evidência sintética & Estado \\
 \midrule
 1 & Automação com Maven/Makefile/comando único & Pipeline Gradle agregada (\texttt{atsFullPipeline}) e comandos reproduzíveis por etapa & Cumprido \\
 2 & Refactoring + teste de regressão & Refatoração behavior-preserving em módulo de estatísticas (Projeto 2) com revalidação da suite & Cumprido \\
@@ -445,8 +445,8 @@ A assistência por IA foi usada como amplificador de produtividade, sobretudo pa
 Para garantir rigor académico e técnico, todo output de IA foi sujeito a:
 \begin{itemize}
     \item revisão manual linha-a-linha;
-    \item ajuste ao comportamento real do codigo;
-    \item execucao local obrigatória antes de aceitar qualquer teste;
+    \item ajuste ao comportamento real do código;
+    \item execução local obrigatória antes de aceitar qualquer teste;
     \item rejeição de casos redundantes, inconsistentes ou sem valor semântico.
 \end{itemize}
 
@@ -464,7 +464,7 @@ A IA não substituiu engenharia de teste. Foi usada para reduzir custo mecânico
 \textbf{Dimensão} & \textbf{Projeto 1 (Maven)} & \textbf{Projeto 2 (Gradle)} \\
 \midrule
 Sistema de build & Ciclo declarativo + perfis & Tarefas composíveis + automação agregada \\
-Execucao base de testes & Sensível a perfis ativos & Direta com \texttt{bash ./gradlew test} \\
+Execução base de testes & Sensível a perfis ativos & Direta com \texttt{bash ./gradlew test} \\
 EvoSuite & Integrado por perfil + runtime dedicado & Integrado por task Docker \\
 Escopo EvoSuite & 3 classes alvo & 3 classes alvo \\
 Cobertura estrutural & Não centralizada no fluxo atual & JaCoCo integrado no fluxo principal \\
@@ -596,12 +596,11 @@ Este anexo descreve um fluxo recomendado para repetição controlada da avaliaç
 \centering
 \begin{tabular}{p{0.30\textwidth}p{0.14\textwidth}p{0.18\textwidth}p{0.30\textwidth}}
 \toprule
-Risco & Probabilidade & Impacto & Mitigacao \\
+Risco & Probabilidade & Impacto & Mitigação \\
 \midrule
 Perfis Maven incorretos no Projeto 1 & Média & Médio/Alto & Documentar comandos por perfil e incluir comandos de referência no relatório \\
 Runtime EvoSuite incompatível com bytecode & Alta & Médio/Alto & Fixar versões de Java e imagem/container por ambiente controlado \\
 Permissão de execução no wrapper Gradle & Média & Médio & Usar \texttt{bash ./gradlew} ou ajustar permissão de ficheiro no repositório \\
-Mutantes sem cobertura em zonas perifericas & Alta & Medio & Criar testes orientados por sobreviventes e por no-coverage \\
 Mutantes sem cobertura em zonas periféricas & Alta & Médio & Criar testes orientados por sobreviventes e por no-coverage \\
 Falsos positivos em sugestões de IA & Média & Médio & Revisão manual obrigatória e execução local antes de aceitar alterações \\
 \bottomrule
@@ -615,7 +614,7 @@ Para manter consistência e evitar inflação artificial da suite, foi seguida a
     \item cada teste novo deve ter objetivo claro e mensurável;
     \item testes duplicados ou equivalentes são removidos;
     \item testes excessivamente acoplados à implementação interna são evitados;
-    \item preferencia por nomes de teste descritivos e focados em comportamento observavel;
+    \item preferência por nomes de teste descritivos e focados em comportamento observável;
     \item falhas intermitentes (flaky tests) devem ser corrigidas ou removidas;
     \item toda alteração de teste deve ser validada por execução limpa da pipeline relevante.
 \end{itemize}
