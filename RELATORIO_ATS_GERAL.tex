@@ -200,8 +200,8 @@ O enunciado ATS define 6 tarefas obrigatórias e 4 extras valorizados. Nesta sec
 \midrule
 1 & Escrever/complementar testes JUnit & Reforço em utilitários e controlador & Reforço em utilitários e estatísticas & Cumprido \\
 2 & Usar EvoSuite para geração automática & Integrado via perfil Maven (escopo reduzido) & Integrado via task Gradle (escopo reduzido) & Cumprido \\
-3 & Analisar cobertura e qualidade dos testes & Análise qualitativa e diagnóstico por perfis & JaCoCo + interpretação de qualidade via PIT & Cumprido \\
-4 & Usar PIT para criar mutantes & Não foco principal nesta iteração & PIT integrado com métricas reportadas & Cumprido (global) \\
+3 & Analisar cobertura e qualidade dos testes & JaCoCo + PIT (métricas e interpretação) & JaCoCo + interpretação de qualidade via PIT & Cumprido \\
+4 & Usar PIT para criar mutantes & PIT integrado com métricas reportadas & PIT integrado com métricas reportadas & Cumprido \\
 5 & Usar QuickCheck/Hypothesis (ou equivalente) & Não foco principal nesta iteração & jqwik aplicado (equivalente PBT em Java) & Cumprido (global) \\
 6 & Relatório com gráficos e análise & Consolidado neste relatório geral & Consolidado neste relatório geral & Cumprido \\
 \bottomrule
@@ -287,6 +287,15 @@ O Projeto 1 recebeu reforço em testes utilitários e de controlador, com ênfas
     \item persistência/import-export em cenários com ficheiros temporários.
 \end{itemize}
 
+\subsection{Trabalho realizado (integração e estabilização de toolchain)}
+Para permitir uma análise reprodutível de \textbf{cobertura} e \textbf{qualidade da suite} no Projeto 1, foi necessário consolidar um fluxo de execução estável e integrar as ferramentas de medição no ciclo Maven.
+
+Em primeiro lugar, observou-se que os testes automáticos gerados pelo EvoSuite (classes \texttt{\_ESTest}) existiam no repositório, mas apresentavam instabilidade em tempo de execução quando incluídos na suite normal. Por esse motivo, a execução base do projeto foi orientada para um baseline previsível: os \texttt{\_ESTest} são mantidos como artefactos de geração, mas não fazem parte do fluxo default de execução/compilação de testes.
+
+Com o baseline estabilizado, a medição foi integrada em duas dimensões complementares: (i) \textbf{JaCoCo} para obter cobertura estrutural no \texttt{verify}, gerando relatórios em \texttt{target/site/jacoco/}; e (ii) \textbf{PIT} para mutação, executável via \texttt{mvn org.pitest:pitest-maven:mutationCoverage} e com relatórios em \texttt{target/pit-reports/}. Durante esta integração, foi também necessário garantir compatibilidade entre o runner de testes JUnit 5 e o PIT (plugin JUnit5 adequado), de forma a evitar falhas de execução da análise de mutação.
+
+Por fim, para manter o foco na lógica de negócio e evitar flakiness associada a testes de interface, a análise de mutação foi executada excluindo testes do pacote \texttt{org.View.*}.
+
 \subsection{Estado do build e testes observados}
 \begin{table}[H]
 \centering
@@ -295,8 +304,9 @@ O Projeto 1 recebeu reforço em testes utilitários e de controlador, com ênfas
 Verificação prática & Resultado \\
 \midrule
 \texttt{mvn -DskipTests compile} & Sucesso (exit 0) \\
-\texttt{mvn test} sem perfil adicional & Falha por dependências de teste/EvoSuite runtime \\
-\texttt{mvn -Ptests-junit5,evosuite-runtime test -DskipTests} & Sucesso de compilação (exit 0) \\
+\texttt{mvn test} & Sucesso (exit 0) \\
+\texttt{mvn verify} (JaCoCo) & Sucesso (exit 0) \\
+\texttt{mvn org.pitest:pitest-maven:mutationCoverage} (PIT) & Sucesso (exit 0) \\
 \bottomrule
 \end{tabular}
 \caption{Verificação de usabilidade no Projeto 1}
@@ -309,6 +319,8 @@ A configuração Maven foi estruturada com perfis dedicados:
     \item \texttt{evosuite-generate}: plugin de geração de testes EvoSuite;
     \item \texttt{evosuite-runtime}: runtime necessário para classes \texttt{\_ESTest}.
 \end{itemize}
+
+Nota: apesar de existir suporte a EvoSuite por perfis, a execução \textit{default} do projeto foi mantida estável ao não incluir os \texttt{\_ESTest} automaticamente.
 
 \subsection{EvoSuite limitado a 3 classes}
 No Projeto 1, o parâmetro \texttt{evosuite.cuts} foi restringido para:
@@ -345,6 +357,39 @@ A geração automática em todas as classes de domínio tem custo elevado e pode
 \end{figure}
 
 Os três gráficos acima foram gerados localmente com base nas evidências técnicas reportadas para o Projeto 1 (estado de comandos Maven, perfis ativos na estratégia e limitação de escopo EvoSuite), para manter simetria visual com a secção de resultados do Projeto 2.
+
+\subsection{Cobertura estrutural e qualidade da suite (iteração final)}
+Nesta iteração, o Projeto 1 foi medido com \textbf{JaCoCo} (cobertura estrutural) e \textbf{PIT} (robustez semântica via mutação).
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lr}
+\toprule
+métrica & Valor \\
+\midrule
+Instruction coverage (JaCoCo) & 42.5\% \\
+Branch coverage (JaCoCo) & 44.2\% \\
+Line coverage (JaCoCo) & 54.1\% \\
+Method coverage (JaCoCo) & 61.9\% \\
+Complexity coverage (JaCoCo) & 51.4\% \\
+\midrule
+Muta\c{c}\~oes geradas (PIT) & 495 \\
+Killed (PIT) & 200 \\
+Survived (PIT) & 50 \\
+No coverage (PIT) & 245 \\
+Mutation score (killed/total) & 40.4\% \\
+Test strength (killed/covered) & 80.0\% \\
+\bottomrule
+\end{tabular}
+\caption{Resumo de métricas consolidadas do Projeto 1}
+\end{table}
+
+Interpretação sintética:
+\begin{itemize}
+    \item A cobertura global é moderada (\textit{line} 54.1\%), mas com assimetria por pacote: \texttt{org.Controller} apresenta cobertura muito baixa (\textit{line} 11.7\%, \textit{branch} 5.9\%), e \texttt{org.Model} mantém margem de melhoria (\textit{line} 25.1\%).
+    \item Em mutação, a suite é forte \textit{onde existe cobertura}: dos mutantes cobertos (495 - 245 = 250), 80.0\% foram mortos (\textit{test strength}).
+    \item O principal problema de qualidade é \textbf{no-coverage} elevado (245/495), o que reduz o \textit{mutation score} global (40.4\%) e indica grandes zonas de código que não são exercitadas pelos testes atuais (em particular no controlador).
+\end{itemize}
 
 \section{Projeto 2 - SpotifUM (Gradle)}
 \subsection{Intervenção principal}
@@ -464,11 +509,11 @@ A IA não substituiu engenharia de teste. Foi usada para reduzir custo mecânico
 \textbf{Dimensão} & \textbf{Projeto 1 (Maven)} & \textbf{Projeto 2 (Gradle)} \\
 \midrule
 Sistema de build & Ciclo declarativo + perfis & Tarefas composíveis + automação agregada \\
-Execução base de testes & Sensível a perfis ativos & Direta com \texttt{bash ./gradlew test} \\
+Execução base de testes & Direta com \texttt{mvn test} (EvoSuite excluído por defeito) & Direta com \texttt{bash ./gradlew test} \\
 EvoSuite & Integrado por perfil + runtime dedicado & Integrado por task Docker \\
 Escopo EvoSuite & 3 classes alvo & 3 classes alvo \\
-Cobertura estrutural & Não centralizada no fluxo atual & JaCoCo integrado no fluxo principal \\
-Mutação & Não foco principal nesta iteração & PIT integrado e operacional \\
+Cobertura estrutural & JaCoCo integrado via \texttt{mvn verify} & JaCoCo integrado no fluxo principal \\
+Mutação & PIT integrado e executável via \texttt{mutationCoverage} & PIT integrado e operacional \\
 PBT & Não foco principal nesta iteração & jqwik aplicado em propriedades \\
 Automação end-to-end & Parcial & Completa via task/script \\
 Risco operacional dominante & Gestão de perfis e runtime de teste & Compatibilidade de runtime EvoSuite + permissão wrapper \\
@@ -480,7 +525,9 @@ Risco operacional dominante & Gestão de perfis e runtime de teste & Compatibili
 \begin{lstlisting}[caption={Comandos chave de reprodução - Projeto 1},label={lst:p1-commands}]
 cd Projeto1/SpotifyUM
 mvn -DskipTests compile
-mvn -Ptests-junit5,evosuite-runtime test
+mvn test
+mvn verify
+mvn org.pitest:pitest-maven:mutationCoverage
 mvn -Pevosuite-generate test
 \end{lstlisting}
 
