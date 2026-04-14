@@ -28,6 +28,9 @@ dependency-reduced-pom.xml
 **/pit-reports/
 **/reports/
 
+# EvoSuite (generated working directory)
+**/.evosuite/
+
 # ------------------------------------------------------------
 # IDE / editor
 # ------------------------------------------------------------
@@ -48,6 +51,9 @@ Thumbs.db
 *.log
 *.tmp
 *.swp
+
+# Runtime/temporary serialized files
+Projeto1/SpotifyUM/x.ser
 
 # ------------------------------------------------------------
 # Model/diagram backup/lock files (não essenciais)
