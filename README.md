@@ -10,6 +10,8 @@ Corre os testes unitários “manuais” (baseline):
 mvn -f "Projeto1/SpotifyUM/pom.xml" test
 ```
 
+Inclui também testes *property-based* (estilo QuickCheck) com jqwik em `Projeto1/SpotifyUM/src/test/java/org/PropertyBased/SpotifUMPropertyBasedTest.java`.
+
 ### 2) Cobertura (JaCoCo)
 Gera o relatório de cobertura em `Projeto1/SpotifyUM/target/site/jacoco/`:
 ```bash
