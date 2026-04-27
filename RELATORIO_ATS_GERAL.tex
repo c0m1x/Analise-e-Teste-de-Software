@@ -202,7 +202,7 @@ O enunciado ATS define 6 tarefas obrigatórias e 4 extras valorizados. Nesta sec
 2 & Usar EvoSuite para geração automática & Integrado via perfil Maven (escopo reduzido) & Integrado via task Gradle (escopo reduzido) & Cumprido \\
 3 & Analisar cobertura e qualidade dos testes & JaCoCo + PIT (métricas e interpretação) & JaCoCo + interpretação de qualidade via PIT & Cumprido \\
 4 & Usar PIT para criar mutantes & PIT integrado com métricas reportadas & PIT integrado com métricas reportadas & Cumprido \\
-5 & Usar QuickCheck/Hypothesis (ou equivalente) & Não foco principal nesta iteração & jqwik aplicado (equivalente PBT em Java) & Cumprido (global) \\
+5 & Usar QuickCheck/Hypothesis (ou equivalente) & jqwik aplicado (equivalente PBT em Java) & jqwik aplicado (equivalente PBT em Java) & Cumprido \\
 6 & Relatório com gráficos e análise & Consolidado neste relatório geral & Consolidado neste relatório geral & Cumprido \\
 \bottomrule
 \end{tabular}
@@ -249,14 +249,14 @@ JUnit foi a base comum dos dois projetos, com ênfase em cenários de fronteira,
 EvoSuite foi integrado nos dois projetos para geração automática de testes. Para manter iterações curtas e reduzir custo computacional, a geração foi limitada a 3 classes por projeto.
 
 \subsection{JaCoCo e PIT}
-No Projeto 2, JaCoCo e PIT foram usados em conjunto:
+Nos Projetos 1 e 2, JaCoCo e PIT foram usados em conjunto:
 \begin{itemize}
     \item JaCoCo para visibilidade estrutural (o que é executado);
     \item PIT para eficácia semântica dos testes (o que realmente deteta defeitos).
 \end{itemize}
 
 \subsection{Property-Based Testing (jqwik)}
-No Projeto 2, jqwik foi aplicado em propriedades de invariantes para aumentar diversidade de entradas e detetar casos não previstos por testes exemplo-a-exemplo.
+Nos Projetos 1 e 2, jqwik foi aplicado em propriedades de invariantes para aumentar diversidade de entradas e detetar casos não previstos por testes exemplo-a-exemplo.
 
 \section{Rastreabilidade de requisitos funcionais (POO) para teste}
 Para reforçar a componente académica do relatório, a tabela seguinte liga áreas funcionais do enunciado POO aos focos de teste considerados.
@@ -514,7 +514,7 @@ EvoSuite & Integrado por perfil + runtime dedicado & Integrado por task Docker \
 Escopo EvoSuite & 3 classes alvo & 3 classes alvo \\
 Cobertura estrutural & JaCoCo integrado via \texttt{mvn verify} & JaCoCo integrado no fluxo principal \\
 Mutação & PIT integrado e executável via \texttt{mutationCoverage} & PIT integrado e operacional \\
-PBT & Não foco principal nesta iteração & jqwik aplicado em propriedades \\
+PBT & jqwik aplicado em propriedades & jqwik aplicado em propriedades \\
 Automação end-to-end & Parcial & Completa via task/script \\
 Risco operacional dominante & Gestão de perfis e runtime de teste & Compatibilidade de runtime EvoSuite + permissão wrapper \\
 \bottomrule
@@ -590,9 +590,9 @@ Item de avaliação & Projeto 1 & Projeto 2 \\
 \midrule
 Complemento de testes JUnit & Sim & Sim \\
 Geração automática com EvoSuite & Sim (escopo reduzido) & Sim (escopo reduzido) \\
-Cobertura estrutural & Parcial/documentada & Sim (JaCoCo) \\
-Mutação & Parcial/documentada & Sim (PIT) \\
-Property-based testing & Parcial/documentada & Sim (jqwik) \\
+Cobertura estrutural & Sim (JaCoCo) & Sim (JaCoCo) \\
+Mutação & Sim (PIT) & Sim (PIT) \\
+Property-based testing & Sim (jqwik) & Sim (jqwik) \\
 Pipeline reproduzível & Parcial & Sim \\
 Justificação técnica e análise crítica & Sim & Sim \\
 \bottomrule

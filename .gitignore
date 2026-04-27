@@ -31,6 +31,11 @@ dependency-reduced-pom.xml
 # EvoSuite (generated working directory)
 **/.evosuite/
 
+# jqwik (property-based testing) local database
+**/.jqwik-database
+**/.jqwik-database/
+**/.jqwik-database/**
+
 # ------------------------------------------------------------
 # IDE / editor
 # ------------------------------------------------------------
