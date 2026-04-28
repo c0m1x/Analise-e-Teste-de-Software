@@ -531,7 +531,14 @@ mvn -DskipTests compile
 mvn test
 mvn verify
 mvn org.pitest:pitest-maven:mutationCoverage
+
+rm -rf .evosuite
+JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
+    PATH="/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH" \
+    mvn -Pevosuite-generate -Dmaven.test.skip=true clean test
+=======
 mvn -Ptests-junit5,evosuite-generate -DskipTests test
+
 \end{lstlisting}
 
 \subsection{Comandos de Referência --- Projeto 2}

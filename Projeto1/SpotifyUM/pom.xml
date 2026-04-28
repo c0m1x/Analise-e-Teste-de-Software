@@ -220,6 +220,9 @@
                             <execution>
                                 <id>evosuite-export-tests</id>
                                 <phase>process-test-sources</phase>
+                                <configuration>
+                                    <targetFolder>target/generated-test-sources/evosuite</targetFolder>
+                                </configuration>
                                 <goals>
                                     <goal>export</goal>
                                 </goals>

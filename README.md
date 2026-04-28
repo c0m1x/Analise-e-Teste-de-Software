@@ -31,16 +31,15 @@ O profile `evosuite-generate` está configurado (no `pom.xml`) para gerar testes
 
 Notas importantes:
 - O `evosuite-maven-plugin:1.0.3` requer Java 8 (precisa de `tools.jar`).
-- Ao ativar profiles manualmente, o profile `tests-junit5` (que é `activeByDefault`) deixa de ser ativado automaticamente; por isso, ao correr EvoSuite deve-se incluir também `tests-junit5`.
 - Os ficheiros `*_ESTest*.java` existentes no repositório são mantidos como evidência/artefactos, mas estão excluídos por defeito da compilação/execução da suite normal (para manter o baseline estável).
+- O `export` do EvoSuite está configurado para escrever em `Projeto1/SpotifyUM/target/generated-test-sources/evosuite/` (não altera `src/test/java`).
 
-Comando para gerar/exportar com Java 8 (sem correr testes):
+Comando para gerar/exportar com Java 8 (sem compilar/correr testes):
 ```bash
 rm -rf "Projeto1/SpotifyUM/.evosuite" \
-	&& find "Projeto1/SpotifyUM/src/test/java" -name '*_ESTest*.java' -delete \
 	&& JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-		 PATH="/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH" \
-		 mvn -f "Projeto1/SpotifyUM/pom.xml" -Ptests-junit5,evosuite-generate -DskipTests test
+			 PATH="/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH" \
+			 mvn -f "Projeto1/SpotifyUM/pom.xml" -Pevosuite-generate -Dmaven.test.skip=true clean test
 ```
 
 Se quiseres apenas correr o baseline depois da geração:
