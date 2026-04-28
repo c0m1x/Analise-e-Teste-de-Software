@@ -76,7 +76,7 @@ public class ProfileMenuTest {
     void testHandleInputChangePlans() {
 
         
-        simulateUserInput("4\n");
+        simulateUserInput("3\n");
         
         // Call handleInput() to process the simulated input
         profileMenu.handleInput();

@@ -25,10 +25,13 @@ public class SubscriptionPlanAdapter
             throws JsonParseException {
         JsonObject obj = json.getAsJsonObject();
         String kind = obj.has("type") ? obj.get("type").getAsString() : "FreePlan";
-        return switch (kind) {
-            case "PremiumBase" -> ctx.deserialize(obj, PremiumBase.class);
-            case "PremiumTop" -> ctx.deserialize(obj, PremiumTop.class);
-            default -> ctx.deserialize(obj, FreePlan.class);
-        };
+        switch (kind) {
+            case "PremiumBase":
+                return ctx.deserialize(obj, PremiumBase.class);
+            case "PremiumTop":
+                return ctx.deserialize(obj, PremiumTop.class);
+            default:
+                return ctx.deserialize(obj, FreePlan.class);
+        }
     }
 }

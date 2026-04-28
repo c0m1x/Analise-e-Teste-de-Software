@@ -5,7 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 echo "[ATS] Running full pipeline: tests + coverage + mutation + evosuite"
-./gradlew test jacocoTestReport pitest evosuiteGenerate --no-daemon
+bash ./gradlew test jacocoTestReport pitest evosuiteGenerate --no-daemon
 
 echo "[ATS] Pipeline finished"
 echo "[ATS] Reports:"

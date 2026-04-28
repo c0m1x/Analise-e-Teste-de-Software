@@ -6,6 +6,7 @@ plugins {
 }
 
 import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.compile.JavaCompile
 import java.io.File
 
 group = "org.spotifumtp37"
@@ -30,8 +31,17 @@ application {
     mainClass.set("org.spotifumtp37.Main")
 }
 
+tasks.named<JavaCompile>("compileJava") {
+    options.release.set(8)
+}
+
+tasks.named<JavaCompile>("compileTestJava") {
+    exclude("**/*_ESTest.java", "**/*_ESTest_scaffolding.java")
+}
+
 tasks.test {
     useJUnitPlatform()
+    exclude("**/*_ESTest*", "**/*_ESTest_scaffolding*")
     finalizedBy(tasks.jacocoTestReport)
 }
 
@@ -63,25 +73,37 @@ tasks.register("evosuiteGenerate") {
     dependsOn(tasks.testClasses)
 
     doLast {
+        val evosuiteClasspathDir = layout.buildDirectory.dir("evosuite-classpath").get().asFile
+        delete(evosuiteClasspathDir)
+        evosuiteClasspathDir.mkdirs()
+
         val projectCp = sourceSets.named("main").get().runtimeClasspath.files
             .filter { it.exists() }
-            .joinToString(File.pathSeparator) { it.absolutePath }
+            .joinToString(File.pathSeparator) { entry ->
+                if (entry.toPath().startsWith(project.projectDir.toPath())) {
+                    "/workspace/${entry.relativeTo(project.projectDir).invariantSeparatorsPath}"
+                } else {
+                    val copiedEntry = File(evosuiteClasspathDir, entry.name)
+                    copy {
+                        from(entry)
+                        into(if (entry.isDirectory) copiedEntry else evosuiteClasspathDir)
+                    }
+                    "/workspace/${copiedEntry.relativeTo(project.projectDir).invariantSeparatorsPath}"
+                }
+            }
         val workspaceDir = project.projectDir.absolutePath
-        val userHome = System.getProperty("user.home")
         evosuiteTargets.forEach { targetClass ->
             exec {
                 commandLine(
-                    "bash", "-lc",
-                    "docker run --rm " +
-                            "-v \"$workspaceDir\":/workspace " +
-                            "-v \"$userHome\":\"$userHome\" " +
-                            "-w /workspace " +
-                            "evosuite/evosuite:latest " +
-                            "-class $targetClass " +
-                            "-projectCP \"$projectCp\" " +
-                            "-Dtest_dir=src/test/java " +
-                            "-Dassertions=true " +
-                            "-Dsearch_budget=60"
+                    "docker", "run", "--rm",
+                    "-v", "$workspaceDir:/workspace",
+                    "-w", "/workspace",
+                    "evosuite/evosuite:latest",
+                    "-class", targetClass,
+                    "-projectCP", projectCp,
+                    "-Dtest_dir=src/test/java",
+                    "-Dassertions=true",
+                    "-Dsearch_budget=60"
                 )
             }
         }
