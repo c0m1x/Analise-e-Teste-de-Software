@@ -1,23 +1,35 @@
 package org.Model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.time.LocalDate;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
+import org.Exceptions.AlreadyExistsException;
+import org.Exceptions.EmptyPlaylistException;
+import org.Exceptions.NoArtistsInDatabaseException;
+import org.Exceptions.NoMusicsInDatabaseException;
+import org.Exceptions.NoPremissionException;
+import org.Exceptions.NoReproductionsInDatabaseException;
+import org.Exceptions.NoUsersInDatabaseException;
+import org.Exceptions.NotFoundException;
 import org.Model.Album.Album;
 import org.Model.Music.Music;
 import org.Model.Music.MusicMultimedia;
-import org.Model.Playlist.*;
+import org.Model.Plan.PlanFree;
+import org.Model.Plan.PlanPremiumBase;
+import org.Model.Plan.PlanPremiumTop;
+import org.Model.Playlist.Playlist;
+import org.Model.Playlist.PlaylistCreator;
+import org.Model.Playlist.PlaylistFavorites;
+import org.Model.Playlist.PlaylistRandom;
 import org.Model.User.User;
-import org.Model.Plan.*;
-import org.Exceptions.*;
 
 /**
  * Classe principal do modelo do sistema SpotifUM.
@@ -167,6 +179,9 @@ public class SpotifUM implements Serializable {
      * @param users Mapa de utilizadores
      */
     public void setUsers(Map<String, User> users) {
+        if (users == null) {
+            throw new NullPointerException("users is null");
+        }
         this.users = new HashMap<>();
         this.users.putAll(users);
     }
@@ -381,6 +396,9 @@ public class SpotifUM implements Serializable {
      * @return true se o utilizador existe, false caso contrário
      */
     public boolean userExists(String nome) {
+        if (nome == null || this.users.containsKey(null) || this.users.containsValue(null)) {
+            throw new NullPointerException();
+        }
         return this.users.containsKey(nome);
     }
 
