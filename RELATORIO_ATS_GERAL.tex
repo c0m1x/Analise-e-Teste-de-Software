@@ -171,7 +171,7 @@ O Projeto 2 assenta em Gradle e dispõe de uma \emph{pipeline} de verificação 
 
 A utilização simultânea de Maven e Gradle correspondeu a uma escolha deliberada para explorar dois ecossistemas complementares. O Maven foi mantido no Projeto 1 pela sua configuração declarativa e pela separação limpa por \emph{profiles}, adequada a cenários com modos de execução distintos entre \emph{suite} normal e geração EvoSuite. O Gradle foi adoptado no Projeto 2 pela facilidade de composição de tarefas e automação de \emph{pipeline end-to-end}, incluindo relatórios encadeados.
 
-Esta abordagem permitiu comparar práticas em contextos reais de manutenção: previsibilidade de ciclo de vida (Maven) versus flexibilidade de orquestração (Gradle).
+Esta abordagem permitiu comparar práticas em contextos reais de manutenção: previsibilidade de ciclo de vida (Maven) versus flexibilidade de orquestração (Gradle), permitindo à equipa uma exploração de diferentes ambientes, aplicando assim de forma diversificada as ferramentas indicadas pela equipa docente, à semelhança do que poderá vir a acontecer na prática profissional.
 
 \section{Objectivos e Critérios de Qualidade}
 
@@ -195,7 +195,7 @@ Esta abordagem permitiu comparar práticas em contextos reais de manutenção: p
 
 \section{Conformidade com o Enunciado ATS 2025/2026}
 
-O enunciado ATS define seis tarefas obrigatórias e quatro extras valorizados. Nesta secção apresenta-se o cumprimento de forma rastreável, com evidência técnica por projecto.
+O enunciado ATS define seis tarefas obrigatórias e quatro extras valorizados. Nesta secção apresenta-se o cumprimento de forma rastreável, com evidência técnica por projecto efetuadas pela equipa.
 
 \subsection{Tarefas obrigatórias (1 a 6)}
 \begin{table}[H]
@@ -222,15 +222,17 @@ O enunciado ATS define seis tarefas obrigatórias e quatro extras valorizados. N
 \toprule
 \# & Extra do enunciado ATS & Evidência sintética & Estado \\
 \midrule
-1 & Automação com Maven/Makefile/comando único & \emph{Pipeline} Gradle agregada (\texttt{atsFullPipeline}) e comandos reprodutíveis por etapa & Cumprido \\
+Total de testes JUnit & 275 \\
 2 & Refactoring + teste de regressão & Refactorização \emph{behavior-preserving} no módulo de estatísticas (Projeto 2) com revalidação da \emph{suite} & Cumprido \\
-3 & \emph{Property-Based Testing} em Java & jqwik aplicado a propriedades e invariantes de comportamento & Cumprido \\
-4 & Bom relatório & Documento consolidado, com comparação, evidências, riscos e anexos técnicos & Cumprido \\
-\bottomrule
+Cobertura de instruções (JaCoCo) & 65\% \\
+Cobertura de linhas (JaCoCo) & 64,28\% \\
+Cobertura de ramos (JaCoCo) & 59\% \\
 \end{tabular}
-\caption{Matriz de cumprimento dos extras valorizados}
-\end{table}
-
+\emph{Mutation score} (PIT) & 44\% \\
+\emph{Test strength} (PIT) & 72\% \\
+Mutantes mortos (PIT) & 387 \\
+Mutantes sobreviventes cobertos (PIT) & 149 \\
+Mutantes sem cobertura (PIT) & 351 \\
 \subsection{Nota sobre cobertura do enunciado POO}
 
 O PDF anexado inclui também o enunciado original de POO (24/25), com requisitos funcionais de negócio. A estratégia de teste procurou incidir especialmente nas zonas de maior risco funcional:
@@ -247,26 +249,27 @@ Esta abordagem não substitui a validação exaustiva de todos os caminhos da ap
 
 \subsection{JUnit}
 
-JUnit constituiu a base comum dos dois projectos, com ênfase em cenários de fronteira, validação de excepções, caminhos negativos e garantia de regressão funcional após alterações.
+A utilização da framework JUnit estabeleceu-se como a base fundamental para a estratégia de testes de ambos os projectos. A implementação focou-se, de forma prioritária, na cobertura de cenários de fronteira e na validação rigorosa de excepções, assegurando simultaneamente o tratamento de caminhos negativos. Esta abordagem foi essencial para garantir a regressão funcional e a estabilidade do sistema após a introdução de alterações ao código.
 
 \subsection{EvoSuite}
 
-O EvoSuite foi integrado em ambos os projectos para geração automática de testes. Para manter iterações curtas e reduzir o custo computacional, a geração foi limitada a três classes por projecto.
+A ferramenta EvoSuite foi integrada em ambos os projetos com o propósito de automatizar a geração de casos de teste. De forma a assegurar iterações de desenvolvimento mais curtas e a minimizar o impacto no custo computacional, optou-se por restringir o processo de geração a um conjunto selecionado de três classes por projeto.
 
 \subsection{JaCoCo e PIT}
 
-Nos dois projectos, JaCoCo e PIT foram utilizados em conjunto de forma complementar:
+Nos dois projectos, as ferramentas JaCoCo e PIT foram utilizadas de forma conjunta e complementar para aferir a qualidade da validação:
 \begin{itemize}
-    \item JaCoCo para visibilidade estrutural --- identificação do código efectivamente executado;
-    \item PIT para avaliação da eficácia semântica dos testes --- identificação do que é efectivamente detectado.
+    \item \textbf{JaCoCo para visibilidade estrutural:} foi empregue com o intuito de mapear a cobertura de código, permitindo a identificação precisa das instruções e caminhos que são efectivamente percorridos durante a execução dos testes;
+    \item \textbf{PIT para avaliação da eficácia semântica:} foi utilizado para analisar a robustez dos testes através da inserção de mutantes, focando-se na identificação da capacidade real de detecção de falhas e garantindo que os testes validam efectivamente a lógica do programa.
 \end{itemize}
 
 \subsection{\emph{Property-Based Testing} (jqwik)}
 
-O \emph{property-based testing} foi aplicado nos dois projectos para verificar invariantes comportamentais, com o objectivo de aumentar a diversidade das entradas e detectar casos não previstos por testes exemplo-a-exemplo.
+A técnica de \emph{property-based testing} foi implementada em ambos os projectos com o propósito de verificar a manutenção de invariantes comportamentais sob diversas condições. Esta abordagem foi adoptada com o objectivo estratégico de aumentar significativamente a diversidade dos dados de entrada, permitindo assim a detecção de cenários de erro e casos de fronteira (\emph{edge cases}) que, frequentemente, não são previstos ou capturados através das abordagens tradicionais de testes baseados em exemplos (\emph{example-by-example}).
 
 \section{Rastreabilidade de Requisitos Funcionais (POO) para Teste}
 
+Não obstante o foco principal deste trabalho incidir sobre o teste de software, considerou-se pertinente observar os requisitos originais do projeto de Programação Orientada a Objetos (POO). Esta análise permitiu direcionar os esforços de teste para as componentes mais críticas do sistema, assegurando uma validação alinhada com as funcionalidades nucleares do mesmo.
 A tabela seguinte relaciona as áreas funcionais do enunciado POO com os focos de teste adoptados em cada projecto.
 
 \begin{table}[H]
@@ -325,7 +328,7 @@ A geração automática sobre a totalidade das classes de domínio acarreta cust
     \item libertar tempo para a análise de mutantes, cobertura e consolidação de testes manuais.
 \end{itemize}
 
-\clearpage
+
 
 \begin{figure}[!h]
     \centering
@@ -345,7 +348,7 @@ A geração automática sobre a totalidade das classes de domínio acarreta cust
     \caption{Escopo de geração EvoSuite no domínio \texttt{Model} do Projeto 1}
 \end{figure}
 
-\atsfigure{projeto1_jacoco.jpeg}{0.40}{Relatório de cobertura JaCoCo do Projeto 1}
+\atsfigure{projeto1_jacoco.jpg}{0.40}{Relatório de cobertura JaCoCo do Projeto 1}
 
 Os gráficos acima foram gerados localmente com base nas evidências técnicas recolhidas para o Projeto 1, para manter simetria visual com a secção de resultados do Projeto 2.
 
@@ -359,12 +362,12 @@ Durante a validação final foi identificada uma inconsistência no teste \textt
 \toprule
 Métrica & Valor observado \\
 \midrule
-Total de testes JUnit & 216 \\
+Total de testes JUnit & 261 \\
 Taxa de sucesso JUnit & 100\% \\
-Cobertura de instruções (JaCoCo) & 43,72\% \\
-Cobertura de ramos (JaCoCo) & 45,71\% \\
-Cobertura de linhas (JaCoCo) & 55,31\% \\
-Cobertura de métodos (JaCoCo) & 63,11\% \\
+Cobertura de instruções (JaCoCo) & 55\% \\
+Cobertura de ramos (JaCoCo) & 54\% \\
+Cobertura de linhas (JaCoCo) & 65,98\% \\
+Cobertura de métodos (JaCoCo) & 81,07\% \\
 Mutantes gerados (PIT) & 495 \\
 Mutantes mortos (PIT) & 206 \\
 Mutantes sobreviventes cobertos (PIT) & 56 \\
@@ -448,17 +451,17 @@ A automação por \texttt{Makefile} e por \emph{script} foi igualmente ajustada 
 \toprule
 Métrica & Valor \\
 \midrule
-Total de testes JUnit & 148 \\
+Total de testes JUnit & 275 \\
 Taxa de sucesso JUnit & 100\% \\
-Cobertura de instruções (JaCoCo) & 51,24\% \\
-Cobertura de linhas (JaCoCo) & 50,73\% \\
-Cobertura de ramos (JaCoCo) & 49,15\% \\
+Cobertura de instruções (JaCoCo) & 65\% \\
+Cobertura de linhas (JaCoCo) & 64,28\% \\
+Cobertura de ramos (JaCoCo) & 59\% \\
 Mutantes gerados (PIT) & 887 \\
-Mutantes mortos (PIT) & 320 \\
-Mutantes sobreviventes cobertos (PIT) & 56 \\
-Mutantes sem cobertura (PIT) & 511 \\
-\emph{Mutation score} (PIT) & 36\% \\
-\emph{Test strength} (PIT) & 85\% \\
+Mutantes mortos (PIT) & 387 \\
+Mutantes sobreviventes cobertos (PIT) & 149 \\
+Mutantes sem cobertura (PIT) & 351 \\
+\emph{Mutation score} (PIT) & 44\% \\
+\emph{Test strength} (PIT) & 72\% \\
 \bottomrule
 \end{tabular}
 \caption{Resumo de métricas consolidadas do Projeto 2}
@@ -485,7 +488,7 @@ Mutantes sem cobertura (PIT) & 511 \\
     \label{fig:pit-p2}
 \end{figure}
 
-\atsfigure{projeto2_jacoco.jpeg}{0.40}{Relatório de cobertura JaCoCo do Projeto 2}
+\atsfigure{projeto2_jacoco.jpg}{0.40}{Relatório de cobertura JaCoCo do Projeto 2}
 
 \clearpage
 
@@ -495,32 +498,21 @@ Os gráficos acima foram gerados localmente a partir das métricas consolidadas 
 
 \subsection{Âmbito de Utilização}
 
-A assistência por IA foi utilizada como amplificador de produtividade, nomeadamente para:
-\begin{itemize}
-    \item propor listas de casos-limite e classes de equivalência;
-    \item acelerar a criação de esqueletos de testes unitários;
-    \item sugerir cenários negativos e casos de excepção;
-    \item sugerir propriedades para testes com jqwik.
-\end{itemize}
+A utilização de ferramentas de Inteligência Artificial foi integrada no fluxo de trabalho como um mecanismo de amplificação da produtividade, permitindo optimizar diversas fases do processo de teste. Em concreto, esta assistência facilitou a elaboração de listas exaustivas de casos-limite e a definição de classes de equivalência, acelerando simultaneamente a estruturação de esqueletos para testes unitários. 
+
+Adicionalmente, a IA contribuiu para a identificação de cenários negativos e fluxos de excepção, bem como para a formulação de propriedades específicas destinadas aos testes baseados em propriedades com a biblioteca \emph{jqwik}.
 
 \subsection{Controlo de Qualidade Aplicado}
 
-Para garantir rigor académico e técnico, todo o \emph{output} de IA foi sujeito a:
-\begin{itemize}
-    \item revisão manual linha-a-linha;
-    \item ajuste ao comportamento real do código;
-    \item execução local obrigatória antes da aceitação de qualquer teste;
-    \item rejeição de casos redundantes, inconsistentes ou sem valor semântico.
-\end{itemize}
+Com o intuito de assegurar o necessário rigor académico e técnico, todo o conteúdo gerado por IA foi submetido a um processo de validação rigoroso, caracterizado por uma revisão manual detalhada, linha a linha. 
+
+Este escrutínio garantiu que cada sugestão fosse devidamente ajustada ao comportamento real do código fonte, exigindo-se a execução local obrigatória de todos os testes antes da sua aceitação definitiva. Neste contexto, foram sistematicamente rejeitados todos os casos que apresentassem redundância, inconsistência lógica ou ausência de valor semântico para a solução final.
 
 \subsection{Posicionamento Metodológico}
 
-A assistência por IA não substituiu a engenharia de teste, tendo sido utilizada exclusivamente para reduzir o custo mecânico de tarefas repetitivas e libertar tempo para actividades de maior valor acrescentado:
-\begin{itemize}
-    \item análise de sobreviventes PIT;
-    \item melhoria de cobertura em zonas de risco;
-    \item interpretação crítica de resultados.
-\end{itemize}
+É fundamental sublinhar que a assistência por IA não substituiu a componente de engenharia de teste, tendo sido mobilizada exclusivamente para mitigar o esforço mecânico associado a tarefas repetitivas.
+
+Esta abordagem permitiu canalizar os recursos cognitivos para actividades de maior valor acrescentado, tais como a análise crítica dos sobreviventes identificados pelo \emph{PIT}, a melhoria estratégica da cobertura em componentes de elevado risco e a interpretação fundamentada dos resultados obtidos, mantendo-se assim o foco na qualidade intelectual do processo de verificação.
 
 \section{Reprodutibilidade}
 
@@ -531,14 +523,7 @@ mvn -DskipTests compile
 mvn test
 mvn verify
 mvn org.pitest:pitest-maven:mutationCoverage
-
-rm -rf .evosuite
-JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-    PATH="/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH" \
-    mvn -Pevosuite-generate -Dmaven.test.skip=true clean test
-=======
 mvn -Ptests-junit5,evosuite-generate -DskipTests test
-
 \end{lstlisting}
 
 \subsection{Comandos de Referência --- Projeto 2}
@@ -558,29 +543,23 @@ bash ./gradlew atsFullPipeline --no-daemon
 
 \section{Riscos, Limitações e Mitigações}
 
-\subsection{Riscos Identificados}
-\begin{itemize}
-    \item dependência de perfis Maven para compilar e executar todas as variantes de testes no Projeto 1;
-    \item dependência de \emph{runtime}/contentor para EvoSuite no Projeto 2;
-    \item cobertura e \emph{mutation score} ainda com margem de melhoria em zonas menos testadas.
-\end{itemize}
+\subsection{Análise de Riscos Identificados}
 
-\subsection{Mitigações Adoptadas}
-\begin{itemize}
-    \item comandos documentados por perfil e por etapa;
-    \item limitação do escopo EvoSuite para iterações mais curtas;
-    \item reforço incremental orientado por métricas (JaCoCo/PIT);
-    \item utilização de IA com validação humana para acelerar o processo sem comprometer a qualidade.
-\end{itemize}
+No decorrer do desenvolvimento deste trabalho, foram identificados riscos técnicos significativos que poderiam condicionar a execução e a repetibilidade dos testes. No contexto do Projeto 1, observou-se uma dependência acentuada da configuração de perfis \emph{Maven} para assegurar a compilação e execução integral das diversas variantes de testes implementadas. 
+
+Relativamente ao Projeto 2, a principal limitação técnica residiu na dependência do \emph{runtime} e do ambiente de contentorização para o funcionamento do \emph{EvoSuite}, o que introduziu uma camada adicional de complexidade na infraestrutura. Por último, reconhece-se que, apesar dos esforços empreendidos, a cobertura de código e o \emph{mutation score} apresentam ainda uma margem de progressão considerável, particularmente em componentes de menor prioridade ou de acesso mais complexo.
+
+\subsection{Estratégias de Mitigação Adoptadas}
+
+Com o intuito de neutralizar os riscos supracitados, foram implementadas diversas medidas mitigadoras. Primeiramente, procedeu-se à documentação exaustiva de todos os comandos necessários, devidamente segmentados por perfil e etapa de execução, garantindo assim a reprodutibilidade do processo. No que concerne ao \emph{EvoSuite}, o âmbito da sua aplicação foi estrategicamente limitado de forma a permitir iterações de desenvolvimento mais curtas e frequentes, evitando o desperdício de recursos computacionais.
+
+Paralelamente, a melhoria da qualidade do software foi abordada de forma incremental, utilizando as métricas fornecidas pelo \emph{JaCoCo} e pelo \emph{PIT} como guias para o reforço dos testes. Complementarmente, a assistência por Inteligência Artificial foi integrada sob um regime de validação humana rigorosa, o que permitiu acelerar o ciclo de escrita de testes sem que a fiabilidade ou o valor semântico dos mesmos fossem comprometidos.
 
 \section{Plano de Melhoria para Iterações Futuras}
-\begin{itemize}
-    \item aumentar a cobertura nas classes de negócio com maior \emph{no-coverage} no PIT;
-    \item reduzir mutantes sobreviventes com testes dirigidos por operador de mutação;
-    \item alargar o \emph{property-based testing} a mais módulos e invariantes de domínio;
-    \item estabilizar a \emph{pipeline} EvoSuite em ambiente controlado de versões Java;
-    \item manter verificação de regressão após cada refactorização relevante.
-\end{itemize}
+
+Para as iterações subsequentes, estabeleceu-se um roteiro de melhoria contínua focado na robustez e na abrangência da validação. Um dos objectivos prioritários consiste no incremento da cobertura de código nas classes de lógica de negócio que apresentam actualmente elevados índices de \emph{no-coverage} no relatório do \emph{PIT}. Neste sentido, pretende-se reduzir o número de mutantes sobreviventes através do desenvolvimento de testes especificamente dirigidos pelos operadores de mutação que se revelaram mais problemáticos.
+
+Adicionalmente, planeia-se o alargamento do \emph{property-based testing} a uma maior diversidade de módulos, incidindo sobre novos invariantes de domínio e regras de negócio complexas. Do ponto de vista infraestrutural, é imperativo estabilizar a \emph{pipeline} do \emph{EvoSuite} num ambiente controlado de versões \emph{Java}, mitigando conflitos de compatibilidade. Por fim, manter-se-á uma política rigorosa de verificação de regressão, garantindo que a integridade funcional do sistema permanece intacta após cada ciclo relevante de refactorização de código.
 
 \section{Conclusão}
 
