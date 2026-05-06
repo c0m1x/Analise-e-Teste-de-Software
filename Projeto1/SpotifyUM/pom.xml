@@ -9,8 +9,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.8.2</junit.version>
         <jqwik.version>1.7.4</jqwik.version>
@@ -195,6 +195,30 @@
                     <scope>test</scope>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-toolchains-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>toolchain</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
+                                    <version>17</version>
+                                    <vendor>openjdk</vendor>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <!-- ================================================================
@@ -204,8 +228,32 @@
              ================================================================ -->
         <profile>
             <id>evosuite-generate</id>
+            <properties>
+                <maven.compiler.source>8</maven.compiler.source>
+                <maven.compiler.target>8</maven.compiler.target>
+            </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-toolchains-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>toolchain</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <toolchains>
+                                <jdk>
+                                    <version>8</version>
+                                    <vendor>openjdk</vendor>
+                                </jdk>
+                            </toolchains>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.evosuite.plugins</groupId>
                         <artifactId>evosuite-maven-plugin</artifactId>
@@ -216,6 +264,7 @@
                             <timeInMinutesPerClass>${evosuite.timeInMinutesPerClass}</timeInMinutesPerClass>
                             <numberOfCores>${evosuite.numberOfCores}</numberOfCores>
                             <assertions>true</assertions>
+                            <javaCommand>/usr/lib/jvm/java-8-openjdk-amd64/bin/java</javaCommand>
                         </configuration>
                         <executions>
                             <execution>
@@ -246,86 +295,116 @@
              Comando: mvn test -P evosuite-run
              Requer que os ficheiros ESTest estejam em src/test/java/
              ================================================================ -->
-        <profile>
-            <id>evosuite-run</id>
-            <dependencies>
-                <!-- Runtime do EvoSuite (EvoRunner, EvoRunnerParameters, EvoAssertions, etc.) -->
-                <dependency>
-                    <groupId>org.evosuite</groupId>
-                    <artifactId>evosuite-standalone-runtime</artifactId>
-                    <version>${evosuite.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <!-- JUnit 4 (os testes ESTest usam @RunWith do JUnit 4) -->
-                <dependency>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                    <version>4.13.2</version>
-                    <scope>test</scope>
-                </dependency>
-                <!-- Vintage engine: permite ao JUnit 5 / Surefire descobrir e correr testes JUnit 4 -->
-                <dependency>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                    <version>${junit.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <!-- Restantes dependências para não quebrar outros testes no classpath -->
-                <dependency>
-                    <groupId>org.junit.jupiter</groupId>
-                    <artifactId>junit-jupiter-api</artifactId>
-                    <version>${junit.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.junit.jupiter</groupId>
-                    <artifactId>junit-jupiter-engine</artifactId>
-                    <version>${junit.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>net.jqwik</groupId>
-                    <artifactId>jqwik</artifactId>
-                    <version>${jqwik.version}</version>
-                    <scope>test</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.mockito</groupId>
-                    <artifactId>mockito-core</artifactId>
-                    <version>4.11.0</version>
-                    <scope>test</scope>
-                </dependency>
-            </dependencies>
+       <profile>
+    <id>evosuite-run</id>
 
-            <build>
-                <plugins>
-                    <!-- Reativar compilação dos ficheiros ESTest (anula exclusão do build padrão) -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <configuration>
-                            <testExcludes combine.self="override"/>
-                        </configuration>
-                    </plugin>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
 
-                    <!-- Correr apenas os testes ESTest e excluir os testes normais -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <useModulePath>false</useModulePath>
-                            <argLine>${jacocoArgLine} --add-opens java.desktop/java.awt=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-exports java.base/sun.net.util=ALL-UNNAMED</argLine>
-                            <includes combine.self="override">
-                                <include>**/*ESTest.java</include>
-                            </includes>
-                            <excludes combine.self="override">
-                                <exclude>**/*ESTest_scaffolding.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
+    <dependencies>
+        <!-- Runtime do EvoSuite (EvoRunner, EvoRunnerParameters, EvoAssertions, etc.) -->
+        <dependency>
+            <groupId>org.evosuite</groupId>
+            <artifactId>evosuite-standalone-runtime</artifactId>
+            <version>${evosuite.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- JUnit 4 (os testes ESTest usam @RunWith do JUnit 4) -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Vintage engine: permite ao JUnit 5 / Surefire descobrir e correr testes JUnit 4 -->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Restantes dependências para não quebrar outros testes no classpath -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.jqwik</groupId>
+            <artifactId>jqwik</artifactId>
+            <version>${jqwik.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.11.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
+    <build>
+        <plugins>
+            <!-- Forçar toolchain Java 8 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>8</version>
+                            <vendor>openjdk</vendor>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+
+            <!-- Reativar compilação dos ficheiros ESTest (anula exclusão do build padrão) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <testIncludes>
+                         <testInclude>**/*ESTest.java</testInclude>
+                    </testIncludes>
+                    <testExcludes combine.self="override"/>
+                </configuration>
+            </plugin>
+
+            <!-- Correr apenas os testes ESTest e excluir os testes normais -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <argLine>${jacocoArgLine}</argLine>
+                    <includes combine.self="override">
+                        <include>**/*ESTest.java</include>
+                    </includes>
+                    <excludes combine.self="override">
+                        <exclude>**/*ESTest_scaffolding.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</profile>
     </profiles>
 </project>
