@@ -24,11 +24,14 @@ public class AdminMenuTest {
     private AdminMenu menu;
 
     private final ByteArrayOutputStream out = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
-    private final InputStream originalIn = System.in;
+    private PrintStream originalOut;
+    private InputStream originalIn;
 
     @BeforeEach
     void setup() {
+        out.reset();
+        originalOut = System.out;
+        originalIn = System.in;
         System.setOut(new PrintStream(out));
         mockController = mock(Controller.class);
         menuManager = new MenuManager(new Controller(new SpotifUM()));

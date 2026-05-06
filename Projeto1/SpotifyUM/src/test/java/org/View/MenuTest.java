@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import org.Controller.Controller;
 import org.Model.SpotifUM;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,6 +24,8 @@ public class MenuTest {
     private MenuManager menuManager;
     private TestMenu testMenu;
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private PrintStream originalOut;
+    private InputStream originalIn;
     
     // Concrete implementation of Menu for testing
     private static class TestMenu extends Menu {
@@ -35,6 +38,10 @@ public class MenuTest {
     
     @BeforeEach
     void setUp() {
+        outputStream.reset();
+        originalOut = System.out;
+        originalIn = System.in;
+
         // Set up output stream capture
         System.setOut(new PrintStream(outputStream));
         
@@ -43,6 +50,12 @@ public class MenuTest {
         controller = new Controller(spotifUM);
         menuManager = new MenuManager(controller);
         testMenu = new TestMenu(controller, menuManager);
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setOut(originalOut);
+        System.setIn(originalIn);
     }
     
     @Test
@@ -112,9 +125,6 @@ public class MenuTest {
         
         // Should return true for "s"
         assertTrue(result);
-        
-        // Reset System.in
-        System.setIn(System.in);
     }
     
     @Test
@@ -133,8 +143,5 @@ public class MenuTest {
         
         // Should return false for "n"
         assertFalse(result);
-        
-        // Reset System.in
-        System.setIn(System.in);
     }
 }

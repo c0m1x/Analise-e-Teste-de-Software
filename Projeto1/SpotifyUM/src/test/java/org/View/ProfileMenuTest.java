@@ -24,11 +24,14 @@ public class ProfileMenuTest {
     private ProfileMenu profileMenu;
     
     private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    private final PrintStream originalOut = System.out;
-    private final InputStream originalIn = System.in;
+    private PrintStream originalOut;
+    private InputStream originalIn;
     
     @BeforeEach
     void setUp() {
+        outputStream.reset();
+        originalOut = System.out;
+        originalIn = System.in;
         // Set up output capture
         System.setOut(new PrintStream(outputStream));
         

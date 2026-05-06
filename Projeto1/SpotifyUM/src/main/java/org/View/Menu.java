@@ -1,6 +1,7 @@
 package org.View;
 
 import java.util.Scanner;
+
 import org.Controller.Controller;
 
 /**
@@ -106,6 +107,12 @@ public abstract class Menu {
      * Limpa o terminal.
      */
     public void cleanTerminal() {
+        // In non-interactive environments (e.g., Maven Surefire, CI), running a
+        // subprocess with inheritIO() can corrupt the test runner's output stream.
+        // Skipping terminal clearing here keeps tests stable.
+        if (System.console() == null) {
+            return;
+        }
         try {
             if (System.getProperty("os.name").toLowerCase().contains("win")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
