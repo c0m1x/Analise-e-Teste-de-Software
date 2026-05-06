@@ -82,6 +82,12 @@ public abstract class Menu {
      * Fecha o scanner de input.
      */
     public void closeScanner() {
+        // Under Maven Surefire the forked JVM uses stdin as a control channel.
+        // Closing a Scanner that wraps System.in can close that channel and
+        // produce "std/in stream corrupted" warnings.
+        if (System.getProperty("surefire.test.class.path") != null) {
+            return;
+        }
         if (scanner != null) {
             scanner.close();
         }
@@ -107,9 +113,15 @@ public abstract class Menu {
      * Limpa o terminal.
      */
     public void cleanTerminal() {
-        // In non-interactive environments (e.g., Maven Surefire, CI), running a
-        // subprocess with inheritIO() can corrupt the test runner's output stream.
-        // Skipping terminal clearing here keeps tests stable.
+        // Maven Surefire runs tests in a forked JVM and uses stdout as a control
+        // channel. Any subprocess using inheritIO() can write directly to the
+        // native stdout and corrupt that channel ("Corrupted STDOUT").
+        // So, never clear the terminal when running under Surefire.
+        if (System.getProperty("surefire.test.class.path") != null) {
+            return;
+        }
+
+        // In non-interactive environments, just skip.
         if (System.console() == null) {
             return;
         }

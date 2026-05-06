@@ -85,7 +85,7 @@ public class MenuTest {
     @Test
     void testScannerGetterAndSetter() {
         // Create a new scanner
-        Scanner newScanner = new Scanner(System.in);
+        Scanner newScanner = new Scanner(new ByteArrayInputStream(new byte[0]));
         
         // Set the new scanner
         testMenu.setScanner(newScanner);
