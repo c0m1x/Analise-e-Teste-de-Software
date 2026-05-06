@@ -49,6 +49,7 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <!-- Por defeito, exclui os ficheiros ESTest para não quebrar o build normal -->
                     <testExcludes>
                         <testExclude>**/*ESTest.java</testExclude>
                         <testExclude>**/*ESTest_scaffolding.java</testExclude>
@@ -72,7 +73,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
                 <configuration>
-                    <!-- Disable module path to work smoothly with JUnit 5 -->
                     <useModulePath>false</useModulePath>
                     <argLine>${jacocoArgLine} --add-opens java.desktop/java.awt=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-exports java.base/sun.net.util=ALL-UNNAMED</argLine>
                     <includes>
@@ -81,14 +81,13 @@
                         <include>**/*TestCase.java</include>
                     </includes>
                     <excludes>
-                        <!-- EvoSuite-generated tests in this repo are currently stale and fail at runtime -->
                         <exclude>**/*ESTest.java</exclude>
                         <exclude>**/*ESTest_scaffolding.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
 
-            <!-- Coverage reports (run with: mvn verify) -->
+            <!-- Cobertura (mvn verify) -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -113,7 +112,7 @@
                 </executions>
             </plugin>
 
-            <!-- Mutation testing (run with: mvn org.pitest:pitest-maven:mutationCoverage) -->
+            <!-- Mutation testing (mvn org.pitest:pitest-maven:mutationCoverage) -->
             <plugin>
                 <groupId>org.pitest</groupId>
                 <artifactId>pitest-maven</artifactId>
@@ -132,7 +131,6 @@
                         <param>--add-opens=java.base/java.net=ALL-UNNAMED</param>
                         <param>--add-exports=java.base/sun.net.util=ALL-UNNAMED</param>
                     </jvmArgs>
-                    <!-- Focus mutation on business logic; exclude UI menus -->
                     <targetClasses>
                         <param>org.Model.*</param>
                         <param>org.Controller.*</param>
@@ -161,6 +159,11 @@
     </build>
 
     <profiles>
+
+        <!-- ================================================================
+             Perfil 1: testes normais JUnit 5 (ativo por defeito)
+             Comando: mvn test
+             ================================================================ -->
         <profile>
             <id>tests-junit5</id>
             <activation>
@@ -194,6 +197,11 @@
             </dependencies>
         </profile>
 
+        <!-- ================================================================
+             Perfil 2: gerar testes com EvoSuite
+             Comando: mvn compile evosuite:generate evosuite:export -P evosuite-generate
+             Depois copiar: cp -r target/generated-test-sources/evosuite/org src/test/java/
+             ================================================================ -->
         <profile>
             <id>evosuite-generate</id>
             <build>
@@ -233,21 +241,36 @@
             </build>
         </profile>
 
+        <!-- ================================================================
+             Perfil 3: correr os testes EvoSuite gerados (*ESTest.java)
+             Comando: mvn test -P evosuite-run
+             Requer que os ficheiros ESTest estejam em src/test/java/
+             ================================================================ -->
         <profile>
             <id>evosuite-run</id>
             <dependencies>
+                <!-- Runtime do EvoSuite (EvoRunner, EvoRunnerParameters, EvoAssertions, etc.) -->
                 <dependency>
                     <groupId>org.evosuite</groupId>
                     <artifactId>evosuite-standalone-runtime</artifactId>
                     <version>${evosuite.version}</version>
                     <scope>test</scope>
                 </dependency>
+                <!-- JUnit 4 (os testes ESTest usam @RunWith do JUnit 4) -->
                 <dependency>
                     <groupId>junit</groupId>
                     <artifactId>junit</artifactId>
                     <version>4.13.2</version>
                     <scope>test</scope>
                 </dependency>
+                <!-- Vintage engine: permite ao JUnit 5 / Surefire descobrir e correr testes JUnit 4 -->
+                <dependency>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                    <version>${junit.version}</version>
+                    <scope>test</scope>
+                </dependency>
+                <!-- Restantes dependências para não quebrar outros testes no classpath -->
                 <dependency>
                     <groupId>org.junit.jupiter</groupId>
                     <artifactId>junit-jupiter-api</artifactId>
@@ -276,23 +299,28 @@
 
             <build>
                 <plugins>
+                    <!-- Reativar compilação dos ficheiros ESTest (anula exclusão do build padrão) -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
-                            <!-- Override default excludes so *_ESTest*.java are compiled in this profile -->
                             <testExcludes combine.self="override"/>
                         </configuration>
                     </plugin>
 
+                    <!-- Correr apenas os testes ESTest e excluir os testes normais -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
+                            <useModulePath>false</useModulePath>
+                            <argLine>${jacocoArgLine} --add-opens java.desktop/java.awt=ALL-UNNAMED --add-opens java.base/java.net=ALL-UNNAMED --add-exports java.base/sun.net.util=ALL-UNNAMED</argLine>
                             <includes combine.self="override">
                                 <include>**/*ESTest.java</include>
                             </includes>
-                            <excludes combine.self="override"/>
+                            <excludes combine.self="override">
+                                <exclude>**/*ESTest_scaffolding.java</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -1,19 +1,15 @@
 package org.Controller;
 
-import org.Model.*;
-import org.Model.Album.*;
-import org.Model.Music.*;
-import org.Model.Playlist.*;
-import org.Model.User.*;
-import org.Model.Plan.*;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.Model.SpotifUM;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Optional;
-import java.util.List;
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Comprehensive tests for Controller class covering all major business logic methods.
