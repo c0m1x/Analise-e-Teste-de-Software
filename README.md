@@ -1,48 +1,165 @@
 # Analise-e-Teste-de-Software
-a106927 - Tiago Martins
-a106894 - Francisco Barros
+a106927 - Tiago Martins  
+a106894 - Francisco Barros  
 
 ## Projeto 1 (SpotifyUM / Maven)
 
-### 1) Suite normal (JUnit 5)
-Corre os testes unitários “manuais” (baseline):
+> **Resumo rápido:**  
+> - **JUnit5 + jqwik** → Java 17  
+> - **EvoSuite** (gerar + correr) → Java 8  
+> - **JaCoCo** → Java 17  
+> - **PIT** → Java 17  
+
+---
+
+## ✅ 1) Suite normal (JUnit 5)
+Corre os testes unitários “manuais” + property-based (jqwik):
+
 ```bash
-mvn -f "Projeto1/SpotifyUM/pom.xml" test
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+
+mvn -f "Projeto1/SpotifyUM/pom.xml" clean test
 ```
 
-Inclui também testes *property-based* (estilo QuickCheck) com jqwik em `Projeto1/SpotifyUM/src/test/java/org/PropertyBased/SpotifUMPropertyBasedTest.java`.
+Inclui o teste property-based em:
+`Projeto1/SpotifyUM/src/test/java/org/PropertyBased/SpotifUMPropertyBasedTest.java`
 
-### 2) Cobertura (JaCoCo)
-Gera o relatório de cobertura em `Projeto1/SpotifyUM/target/site/jacoco/`:
+---
+
+## ✅ 2) Cobertura (JaCoCo)
+Gera o relatório de cobertura:
+
 ```bash
-mvn -f "Projeto1/SpotifyUM/pom.xml" verify
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+
+mvn -f "Projeto1/SpotifyUM/pom.xml" clean verify
 ```
-Relatório HTML: `Projeto1/SpotifyUM/target/site/jacoco/index.html`.
 
-### 3) Qualidade por mutação (PIT)
-Gera o relatório de mutação em `Projeto1/SpotifyUM/target/pit-reports/`:
+Relatório HTML:
+`Projeto1/SpotifyUM/target/site/jacoco/index.html`
+
+---
+
+## ✅ 3) Qualidade por mutação (PIT)
+Gera relatório de mutação:
+
 ```bash
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+
 mvn -f "Projeto1/SpotifyUM/pom.xml" org.pitest:pitest-maven:mutationCoverage
 ```
-Relatório HTML: `Projeto1/SpotifyUM/target/pit-reports/index.html`.
 
-### 4) Geração automática (EvoSuite)
-O profile `evosuite-generate` está configurado (no `pom.xml`) para gerar testes apenas para as CUTs definidas em `evosuite.cuts`.
+Relatório HTML:
+`Projeto1/SpotifyUM/target/pit-reports/index.html`
 
-Notas importantes:
-- O `evosuite-maven-plugin:1.0.3` requer Java 8 (precisa de `tools.jar`).
-- Os ficheiros `*_ESTest*.java` existentes no repositório são mantidos como evidência/artefactos, mas estão excluídos por defeito da compilação/execução da suite normal (para manter o baseline estável).
-- O `export` do EvoSuite está configurado para escrever em `Projeto1/SpotifyUM/target/generated-test-sources/evosuite/` (não altera `src/test/java`).
+---
 
-Comando para gerar/exportar com Java 8 (sem compilar/correr testes):
+## ✅ 4) EvoSuite — gerar testes (Java 8)
+**Obrigatório usar Java 8**.
+
 ```bash
-rm -rf "Projeto1/SpotifyUM/.evosuite" \
-	&& JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
-			 PATH="/usr/lib/jvm/java-8-openjdk-amd64/bin:$PATH" \
-			 mvn -f "Projeto1/SpotifyUM/pom.xml" -Pevosuite-generate -Dmaven.test.skip=true clean test
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+
+rm -rf "Projeto1/SpotifyUM/.evosuite"
+
+mvn -f "Projeto1/SpotifyUM/pom.xml" -P evosuite-generate -Dmaven.test.skip=true clean test
 ```
 
-Se quiseres apenas correr o baseline depois da geração:
+Os testes são exportados para:
+`Projeto1/SpotifyUM/target/generated-test-sources/evosuite/`
+
+---
+
+## ✅ 5) EvoSuite — copiar testes gerados
 ```bash
-mvn -f "Projeto1/SpotifyUM/pom.xml" test
+cp -r "Projeto1/SpotifyUM/target/generated-test-sources/evosuite/org" \
+      "Projeto1/SpotifyUM/src/test/java/"
+```
+
+---
+
+## ✅ 6) EvoSuite — correr testes gerados (Java 8)
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+
+mvn -f "Projeto1/SpotifyUM/pom.xml" -P evosuite-run clean test
+```
+
+---
+
+## ✅ 7) Voltar aos testes normais (Java 17)
+```bash
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export PATH="$JAVA_HOME/bin:$PATH"
+
+mvn -f "Projeto1/SpotifyUM/pom.xml" clean test
+```
+
+---
+
+## Notas importantes sobre o EvoSuite
+- O EvoSuite 1.0.3 **não funciona com bytecode Java 17**.
+- Por isso **gerar e correr testes EvoSuite tem de ser em Java 8**.
+- Os ficheiros `*_ESTest*.java` são excluídos da suite normal por defeito.
+
+---
+
+## Projeto 2 (Gradle)
+
+> **Resumo rápido:**  
+> - **JUnit5 + jqwik** → Gradle  
+> - **JaCoCo** → Gradle  
+> - **PIT** → Gradle  
+> - **EvoSuite** → task `evosuiteGenerate` (Docker)  
+> - **Pipeline completo** → task `atsFullPipeline`
+
+---
+
+## ✅ 1) Suite normal (JUnit 5)
+```bash
+cd Projeto2
+./gradlew clean test
+```
+
+---
+
+## ✅ 2) Cobertura (JaCoCo)
+```bash
+cd Projeto2
+./gradlew jacocoTestReport
+```
+
+Relatório HTML:
+`Projeto2/build/reports/jacoco/test/html/index.html`
+
+---
+
+## ✅ 3) Qualidade por mutação (PIT)
+```bash
+cd Projeto2
+./gradlew pitest
+```
+
+Relatório HTML:
+`Projeto2/build/reports/pitest/index.html`
+
+---
+
+## ✅ 4) EvoSuite — gerar testes
+```bash
+cd Projeto2
+./gradlew evosuiteGenerate
+```
+
+---
+
+## ✅ 5) Pipeline completo (JUnit + JaCoCo + PIT + EvoSuite)
+```bash
+cd Projeto2
+./gradlew atsFullPipeline
 ```
