@@ -108,6 +108,14 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>org/App*</exclude>
+                                <exclude>org/View/**</exclude>
+                                <exclude>org/Utils/MusicPlayer*</exclude>
+                                <exclude>org/Utils/BrowserOpener*</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
