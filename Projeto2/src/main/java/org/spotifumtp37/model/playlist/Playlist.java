@@ -366,7 +366,7 @@ public class Playlist implements Serializable, Playable {
             int randomIndex;
             do {
                 randomIndex = rand.nextInt(songs.size());
-            } while (randomIndex == currentIndex && songs.size() > 1); // ensure different if possible
+            } while (randomIndex == currentIndex); // ensure different if possible
             currentSong = songs.get(randomIndex);
         }
     }
@@ -390,7 +390,7 @@ public class Playlist implements Serializable, Playable {
         int randomIndex;
         do {
             randomIndex = rand.nextInt(songs.size());
-        } while (randomIndex == currentIndex && songs.size() > 1); // ensure different if possible
+        } while (randomIndex == currentIndex); // ensure different if possible
         currentSong = songs.get(randomIndex);
     }
 

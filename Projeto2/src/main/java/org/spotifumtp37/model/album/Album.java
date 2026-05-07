@@ -294,13 +294,17 @@ public class Album implements Playable, Serializable {
      * If there's only one song on the album, no change occurs.
      */
     public void nextShuffle() {
-        if (songs.size() == 1) return;
+        if (songs.size() <= 1) return;
         Random rand = new Random();
         int currentIndex = songs.indexOf(currentSong);
-        int randomIndex;
-        do {
-            randomIndex = rand.nextInt(songs.size());
-        } while (randomIndex == currentIndex);
+        if (currentIndex < 0) {
+            currentSong = songs.get(rand.nextInt(songs.size()));
+            return;
+        }
+        int randomIndex = rand.nextInt(songs.size() - 1);
+        if (randomIndex >= currentIndex) {
+            randomIndex++;
+        }
         currentSong = songs.get(randomIndex);
     }
 

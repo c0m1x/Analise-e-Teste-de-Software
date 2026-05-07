@@ -147,6 +147,8 @@
                     </targetClasses>
                     <excludedClasses>
                         <param>org.View.*</param>
+                        <param>org.Utils.MusicPlayer</param>
+                        <param>org.Utils.BrowserOpener</param>
                         <param>org.App</param>
                     </excludedClasses>
                     <excludedTestClasses>

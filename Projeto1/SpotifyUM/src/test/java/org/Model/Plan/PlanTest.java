@@ -12,7 +12,53 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Plan Classes Comprehensive Tests")
 class PlanTest {
 
+    private static class ObservablePlanFree extends PlanFree {
+        private static int setPointsCalls;
+
+        @Override
+        public void setPoints(int points) {
+            setPointsCalls++;
+            super.setPoints(points);
+        }
+    }
+
+    private static class ObservablePlanPremiumBase extends PlanPremiumBase {
+        private static int setPointsCalls;
+
+        @Override
+        public void setPoints(int points) {
+            setPointsCalls++;
+            super.setPoints(points);
+        }
+    }
+
+    private static class ObservablePlanPremiumTop extends PlanPremiumTop {
+        private static int setPointsCalls;
+
+        @Override
+        public void setPoints(int points) {
+            setPointsCalls++;
+            super.setPoints(points);
+        }
+    }
+
     // ==================== PlanFree Tests ====================
+
+    @Test
+    @DisplayName("Default plan constructors call setPoints explicitly")
+    void defaultConstructors_callSetPointsExplicitly() {
+        ObservablePlanFree.setPointsCalls = 0;
+        ObservablePlanPremiumBase.setPointsCalls = 0;
+        ObservablePlanPremiumTop.setPointsCalls = 0;
+
+        new ObservablePlanFree();
+        new ObservablePlanPremiumBase();
+        new ObservablePlanPremiumTop();
+
+        assertEquals(1, ObservablePlanFree.setPointsCalls);
+        assertEquals(1, ObservablePlanPremiumBase.setPointsCalls);
+        assertEquals(1, ObservablePlanPremiumTop.setPointsCalls);
+    }
 
     @Test
     @DisplayName("PlanFree: default constructor initializes with 0 points")

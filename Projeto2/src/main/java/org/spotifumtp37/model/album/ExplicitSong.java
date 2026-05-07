@@ -44,7 +44,7 @@ public class ExplicitSong extends Song implements Serializable {
      * @return {@code true} since this is an explicit song
      */
     public boolean isExplicit() {
-        return explicit;
+        return true;
     }
 
     /**

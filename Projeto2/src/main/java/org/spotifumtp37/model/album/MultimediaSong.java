@@ -66,7 +66,7 @@ public class MultimediaSong extends Song implements Serializable {
      * @return {@code true} as this is a multimedia song
      */
     public boolean isMultimedia() {
-        return multimedia;
+        return true;
     }
 
     /**

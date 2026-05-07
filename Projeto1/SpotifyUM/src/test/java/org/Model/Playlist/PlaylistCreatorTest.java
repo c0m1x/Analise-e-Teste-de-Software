@@ -103,6 +103,29 @@ class PlaylistCreatorTest {
     }
 
     @Test
+    void createGenrePlaylistActuallyShufflesEligibleSongs() throws Exception {
+        Map<String, Music> musics = new LinkedHashMap<>();
+        for (int i = 0; i < 6; i++) {
+            Music music = new Music("song-" + i, INTERPRETER1, PUBLISHER1, LYRICS1,
+                    MUSICAL_FIGURES1, GENRE1, ALBUM1, 10, false);
+            musics.put(music.getName(), music);
+        }
+        List<String> originalOrder = new ArrayList<>(musics.keySet());
+        boolean sawDifferentOrder = false;
+
+        for (int i = 0; i < 40 && !sawDifferentOrder; i++) {
+            List<String> generated = PlaylistCreator.createGenrePlaylist(
+                    "user1", "ShuffleCheck", GENRE1, 1_000, musics, new HashMap<>())
+                    .stream()
+                    .map(Music::getName)
+                    .toList();
+            sawDifferentOrder = !generated.equals(originalOrder);
+        }
+
+        assertTrue(sawDifferentOrder);
+    }
+
+    @Test
     void testCreateRandomPlaylist() {
         Map<String, Music> musics = new HashMap<>();
         musics.put("Song1", music1);

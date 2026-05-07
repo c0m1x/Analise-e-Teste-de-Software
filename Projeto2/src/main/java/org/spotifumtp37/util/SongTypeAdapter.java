@@ -19,11 +19,7 @@ public class SongTypeAdapter implements JsonSerializer<Song>, JsonDeserializer<S
         boolean isExplicit = obj.has("explicit") && obj.get("explicit").getAsBoolean();
 
         if (isMultimedia) {
-            MultimediaSong song = delegateGson.fromJson(json, MultimediaSong.class);
-            if (obj.has("videoLink")) {
-                song.setVideoLink(obj.get("videoLink").getAsString());
-            }
-            return song;
+            return delegateGson.fromJson(json, MultimediaSong.class);
         } else if (isExplicit) {
             return delegateGson.fromJson(json, ExplicitSong.class);
         } else {
@@ -33,16 +29,6 @@ public class SongTypeAdapter implements JsonSerializer<Song>, JsonDeserializer<S
 
     @Override
     public JsonElement serialize(Song src, Type typeOfSrc, JsonSerializationContext context) {
-        JsonObject obj = delegateGson.toJsonTree(src, src.getClass()).getAsJsonObject();
-        if (src instanceof MultimediaSong) {
-            obj.addProperty("multimedia", true);
-            String videoLink = ((MultimediaSong) src).getVideoLink();
-            if (videoLink != null) {
-                obj.addProperty("videoLink", videoLink);
-            }
-        } else if (src instanceof ExplicitSong) {
-            obj.addProperty("explicit", true);
-        }
-        return obj;
+        return delegateGson.toJsonTree(src, src.getClass());
     }
 }
