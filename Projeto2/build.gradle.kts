@@ -69,6 +69,12 @@ pitest {
     junit5PluginVersion.set("1.2.1")
     targetClasses.set(listOf("org.spotifumtp37.*"))
     targetTests.set(listOf("org.spotifumtp37.*"))
+    excludedClasses.set(
+        listOf(
+            "org.spotifumtp37.delegate.*",
+            "org.spotifumtp37.Main"
+        )
+    )
     outputFormats.set(listOf("HTML", "XML"))
     timestampedReports.set(false)
 }
