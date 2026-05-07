@@ -44,6 +44,37 @@ class AlbumMutationCoverageTest {
     }
 
     @Test
+    void premiumNavigationWithThreeSongsUsesOrderNotShuffle() throws Exception {
+        Song first = song("first");
+        Song second = song("second");
+        Song third = song("third");
+        Album album = new Album("album", "artist", 2024, "rock", List.of(first, second, third));
+
+        for (int i = 0; i < 20; i++) {
+            album.setCurrentSong(first);
+            album.next(premium());
+            assertEquals("second", album.getCurrentSong().getName());
+        }
+
+        album.setCurrentSong(second);
+        album.previous(premium());
+        assertEquals("first", album.getCurrentSong().getName());
+    }
+
+    @Test
+    void shuffleWithTwoSongsAlwaysMovesAwayFromCurrentSong() {
+        Song first = song("first");
+        Song second = song("second");
+        Album album = new Album("album", "artist", 2024, "rock", List.of(first, second));
+
+        for (int i = 0; i < 20; i++) {
+            album.setCurrentSong(first);
+            album.nextShuffle();
+            assertEquals("second", album.getCurrentSong().getName());
+        }
+    }
+
+    @Test
     void shuffleAndFreeNextKeepSingleSongAlbumStable() {
         Song only = song("only");
         Album album = new Album("album", "artist", 2024, "rock", List.of(only));

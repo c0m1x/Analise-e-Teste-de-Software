@@ -159,6 +159,35 @@ class StatsTest {
     }
 
     @Test
+    void topListenerComparatorsDoNotCollapseToFirstUser() {
+        Song song = new Song("Song", "Artist", "Publisher", "Lyrics", "Notes", "Rock", 180);
+        LocalDateTime base = LocalDateTime.of(2026, 3, 1, 10, 0, 0);
+
+        User low = new User("Low", "low@email.com", "Address", new FreePlan(), "pass", 0,
+                new ArrayList<>(List.of(new History(song, base.minusDays(5)))));
+        User high = new User("High", "high@email.com", "Address", new PremiumBase(), "pass", 0,
+                new ArrayList<>(List.of(new History(song, base), new History(song, base.plusDays(1)))));
+        Map<String, User> ordered = new LinkedHashMap<>();
+        ordered.put("Low", low);
+        ordered.put("High", high);
+
+        assertEquals("High", Stats.getTopListener(ordered).getName());
+
+        User manyOld = new User("ManyOld", "old@email.com", "Address", new FreePlan(), "pass", 0,
+                new ArrayList<>(List.of(
+                        new History(song, base.minusDays(5)),
+                        new History(song, base.minusDays(4)),
+                        new History(song, base.minusDays(3)))));
+        User oneRecent = new User("OneRecent", "recent@email.com", "Address", new PremiumBase(), "pass", 0,
+                new ArrayList<>(List.of(new History(song, base))));
+        Map<String, User> dated = new LinkedHashMap<>();
+        dated.put("ManyOld", manyOld);
+        dated.put("OneRecent", oneRecent);
+
+        assertEquals("OneRecent", Stats.getTopListenerFromDate(dated, base).getName());
+    }
+
+    @Test
     void getUserWithMostPoints() {
         // Create users with different points
         User user1 = new User("User1", "user1@email.com", "Address1", new FreePlan(), "pass1", 50, new ArrayList<>());

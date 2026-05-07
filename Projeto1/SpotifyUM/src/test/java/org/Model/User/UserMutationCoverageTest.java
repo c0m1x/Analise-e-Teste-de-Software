@@ -36,15 +36,16 @@ class UserMutationCoverageTest {
         User user = new User("u", "u@mail.com", "addr", "pw");
         user.setPlan(new PlanPremiumBase());
         Playlist own = new Playlist("own", "u");
+        Playlist secondOwn = new Playlist("second-own", "u");
         Playlist foreign = new Playlist("foreign", "someone");
 
-        user.setPlaylists(new ArrayList<>(List.of(own, foreign)));
+        user.setPlaylists(new ArrayList<>(List.of(own, secondOwn, foreign)));
 
-        assertEquals(1, user.getUserPlaylistCount());
+        assertEquals(2, user.getUserPlaylistCount());
         user.changePlaylistAutor("renamed");
 
         List<Playlist> playlists = user.getPlaylists();
-        assertEquals(1, playlists.stream().filter(p -> p.getAutor().equals("renamed")).count());
+        assertEquals(2, playlists.stream().filter(p -> p.getAutor().equals("renamed")).count());
         assertEquals(1, playlists.stream().filter(p -> p.getAutor().equals("someone")).count());
     }
 

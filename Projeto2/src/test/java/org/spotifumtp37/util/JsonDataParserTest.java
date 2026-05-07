@@ -11,6 +11,7 @@ import org.spotifumtp37.model.user.User;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,33 @@ class JsonDataParserTest {
             assertTrue(Files.exists(tempDir.resolve("users.json")));
             assertTrue(Files.exists(tempDir.resolve("albums.json")));
             assertTrue(Files.exists(tempDir.resolve("playlists.json")));
+        } finally {
+            Files.walk(tempDir)
+                    .sorted((a, b) -> b.compareTo(a))
+                    .forEach(path -> {
+                        try {
+                            Files.deleteIfExists(path);
+                        } catch (Exception ignored) {
+                        }
+                    });
+        }
+    }
+
+    @Test
+    void privateDirectoryWriterCreatesMissingDirectory() throws Exception {
+        JsonDataParser parser = new JsonDataParser();
+        SpotifUMData original = buildData();
+        Path tempDir = Files.createTempDirectory("spotifum-reflect");
+        Path nested = tempDir.resolve("nested");
+        Method method = JsonDataParser.class.getDeclaredMethod("saveToMultipleFiles", SpotifUMData.class, String.class);
+        method.setAccessible(true);
+        try {
+            method.invoke(parser, original, nested.toString());
+
+            assertTrue(Files.isDirectory(nested));
+            assertTrue(Files.exists(nested.resolve("users.json")));
+            assertTrue(Files.exists(nested.resolve("albums.json")));
+            assertTrue(Files.exists(nested.resolve("playlists.json")));
         } finally {
             Files.walk(tempDir)
                     .sorted((a, b) -> b.compareTo(a))

@@ -116,6 +116,17 @@ public class MusicMultimediaTest {
         assertNotEquals(musicMultimedia, differentName);
         assertNotEquals(musicMultimedia, null);
         assertNotEquals(musicMultimedia, new Object());
+
+        MusicMultimedia differentUrl = new MusicMultimedia(NAME, INTERPRETER, PUBLISHER, LYRICS,
+                MUSICAL_FIGURES, GENRE, ALBUM, DURATION, EXPLICIT, "https://different.example/video");
+        assertNotEquals(musicMultimedia, differentUrl);
+
+        MusicMultimedia nullUrl = new MusicMultimedia(NAME, INTERPRETER, PUBLISHER, LYRICS,
+                MUSICAL_FIGURES, GENRE, ALBUM, DURATION, EXPLICIT, null);
+        MusicMultimedia alsoNullUrl = new MusicMultimedia(NAME, INTERPRETER, PUBLISHER, LYRICS,
+                MUSICAL_FIGURES, GENRE, ALBUM, DURATION, EXPLICIT, null);
+        assertEquals(nullUrl, alsoNullUrl);
+        assertNotEquals(nullUrl, musicMultimedia);
     }
     
     @Test

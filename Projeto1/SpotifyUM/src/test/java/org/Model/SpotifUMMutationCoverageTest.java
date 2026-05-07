@@ -5,6 +5,7 @@ import org.Exceptions.EmptyPlaylistException;
 import org.Exceptions.NotFoundException;
 import org.Model.Album.Album;
 import org.Model.Music.Music;
+import org.Model.Music.MusicMultimedia;
 import org.Model.Plan.PlanPremiumBase;
 import org.Model.Plan.PlanPremiumTop;
 import org.Model.Playlist.Playlist;
@@ -12,7 +13,9 @@ import org.Model.Playlist.PlaylistCreator;
 import org.Model.User.User;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -101,6 +104,8 @@ class SpotifUMMutationCoverageTest {
         assertEquals(2, album.getMusics().size());
         assertTrue(album.getMusics().stream().anyMatch(m -> m.getName().equals("plain")));
         assertTrue(album.getMusics().stream().anyMatch(m -> m.getName().equals("video")));
+        assertFalse(model.getMusicByName("plain") instanceof MusicMultimedia);
+        assertInstanceOf(MusicMultimedia.class, model.getMusicByName("video"));
         assertThrows(AlreadyExistsException.class,
                 () -> model.addNewMusic("plain", "artist", "publisher", "lyrics", "notes", "rock", "album", 120, false, null));
     }
@@ -144,5 +149,87 @@ class SpotifUMMutationCoverageTest {
                 () -> PlaylistCreator.createGenrePlaylist("u", "none", "jazz", 60, musics, Map.of()));
         assertThrows(EmptyPlaylistException.class,
                 () -> PlaylistCreator.createGenrePlaylist("u", "tiny", "rock", 1, musics, Map.of()));
+    }
+
+    @Test
+    void directPlaybackUsernameChangesAndGeneratedPlaylistsMutateVisibleState() throws Exception {
+        SpotifUM model = new SpotifUM();
+        model.addNewUser("u", "u@mail.com", "addr", "pw");
+        model.authenticateUser("u", "pw");
+        model.getCurrentUser().setPlan(new PlanPremiumTop());
+        model.addNewAlbum("album", "artist");
+        model.addNewMusic("plain", "artist", "publisher", "plain lyrics", "notes", "rock", "album", 120, false, null);
+
+        assertEquals("plain lyrics", model.playMusic("plain"));
+
+        model.addToCurrentUserPlaylist("owned");
+        model.changeCurrentUserName("renamed");
+        assertTrue(model.userExists("renamed"));
+        assertFalse(model.userExists("u"));
+        assertEquals("renamed", model.getCurrentUser().getPlaylists().get(0).getAutor());
+
+        int before = model.getCurrentUser().getPlaylists().size();
+        model.createGenrePlaylist("rock picks", "rock", 120);
+        assertEquals(before + 1, model.getCurrentUser().getPlaylists().size());
+        assertTrue(model.getCurrentUser().getPlaylists().stream()
+                .anyMatch(p -> p.getName().equals("rock picks") && p.getAutor().equals("renamed")));
+    }
+
+    @Test
+    void statisticsChooseTheRealMaximumInsteadOfFirstEncounteredValue() throws Exception {
+        Music low = song("low", "artist", "rock", 120, false);
+        Music high = song("high", "artist", "pop", 120, false);
+        low.setReproductions(1);
+        high.setReproductions(3);
+
+        SpotifUM model = new SpotifUM();
+        model.setMusics(Map.of(low.getName(), low, high.getName(), high));
+        model.setGenreReproductions(Map.of("rock", 1, "pop", 3));
+
+        assertEquals("high", model.mostReproducedMusic().getName());
+        assertEquals("pop", model.getGenreWithMostReproductions());
+
+        User fewPlaylists = new User("a", "few@mail.com", "addr", "pw");
+        fewPlaylists.setPlaylists(new ArrayList<>(List.of(new Playlist("one", "few"))));
+        User manyPlaylists = new User("z", "many@mail.com", "addr", "pw");
+        manyPlaylists.setPlaylists(new ArrayList<>(List.of(
+                new Playlist("one", "z"),
+                new Playlist("two", "z"),
+                new Playlist("foreign", "someone"))));
+        model.setUsers(Map.of("a", fewPlaylists, "z", manyPlaylists));
+
+        assertEquals("z", model.getUserWithMostPlaylists().getUsername());
+
+        fewPlaylists.addMusicReproduction(low);
+        manyPlaylists.addMusicReproduction(high);
+        manyPlaylists.addMusicReproduction(low);
+        model.setUsers(Map.of("a", fewPlaylists, "z", manyPlaylists));
+
+        assertEquals("z", model.getUserWithMostReproductions().getUsername());
+        assertEquals("z", model.getUserWithMostReproductions(LocalDate.now().minusDays(1), LocalDate.now().plusDays(1)).getUsername());
+    }
+
+    @Test
+    void missingPlaylistListingAndNullCurrentUserEqualityBranchesAreObservable() throws NotFoundException {
+        SpotifUM model = new SpotifUM();
+        model.addNewUser("u", "u@mail.com", "addr", "pw");
+        assertDoesNotThrow(() -> model.authenticateUser("u", "pw"));
+        model.getCurrentUser().setPlan(new PlanPremiumBase());
+
+        assertTrue(model.listAllMusicsInPlaylist(999).contains("999"));
+
+        SpotifUM withUser = new SpotifUM();
+        withUser.setCurrentUser(new User("u", "u@mail.com", "addr", "pw"));
+        assertNotEquals(new SpotifUM(), withUser);
+    }
+
+    @Test
+    void populateDatabaseAddsSeedUsersAndPublicPlaylists() {
+        SpotifUM model = new SpotifUM();
+
+        model.populateDatabase();
+
+        assertTrue(model.getUsers().keySet().containsAll(List.of("simao", "gabriel", "jose")));
+        assertTrue(model.getPublicPlaylists().size() >= 6);
     }
 }

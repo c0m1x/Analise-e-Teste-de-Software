@@ -10,6 +10,7 @@ import org.spotifumtp37.model.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,6 +71,9 @@ class PlaylistMutationCoverageTest {
         Song only = song("only");
         Playlist single = new Playlist(premium("creator"), "single", "desc", 0, "public", List.of(only));
         single.setCurrentSong(null);
+        single.next(free("free"));
+        assertNull(single.getCurrentSong());
+
         single.nextShuffle();
         assertEquals("only", single.getCurrentSong().getName());
 
@@ -122,6 +126,41 @@ class PlaylistMutationCoverageTest {
         assertTrue(text.contains("creator: {null}"));
         assertTrue(text.contains("songs=[]"));
         assertTrue(text.contains("currentsong: {null}"));
+    }
+
+    @Test
+    void freeNavigationAndShuffleWithTwoSongsAlwaysMoveAwayFromCurrentSong() {
+        Song first = song("first");
+        Song second = song("second");
+        Playlist playlist = new Playlist(premium("creator"), "p", "desc", 0, "public", List.of(first, second));
+
+        for (int i = 0; i < 20; i++) {
+            playlist.setCurrentSong(first);
+            playlist.next(free("free-" + i));
+            assertEquals("second", playlist.getCurrentSong().getName());
+
+            playlist.setCurrentSong(first);
+            playlist.nextShuffle();
+            assertEquals("second", playlist.getCurrentSong().getName());
+        }
+    }
+
+    @Test
+    void toStringIncludesNonEmptySongList() {
+        Song first = song("first");
+        Playlist playlist = new Playlist(premium("creator"), "p", "desc", 0, "private", List.of(first));
+
+        assertTrue(playlist.toString().contains("first"));
+    }
+
+    @Test
+    void toStringFallsBackToEmptyListWhenInternalSongsReferenceIsNull() throws Exception {
+        Playlist playlist = new Playlist(premium("creator"), "p", "desc", 0, "private", List.of(song("first")));
+        Field songsField = Playlist.class.getDeclaredField("songs");
+        songsField.setAccessible(true);
+        songsField.set(playlist, null);
+
+        assertTrue(playlist.toString().contains("songs=[]"));
     }
 
     @Test

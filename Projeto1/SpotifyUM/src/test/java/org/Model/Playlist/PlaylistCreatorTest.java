@@ -90,6 +90,19 @@ class PlaylistCreatorTest {
     }
 
     @Test
+    void createGenrePlaylistIncludesSongThatExactlyFitsDuration() throws Exception {
+        Map<String, Music> musics = new HashMap<>();
+        musics.put("exact", music2);
+        musics.put("tooLong", music1);
+
+        List<Music> playlist = PlaylistCreator.createGenrePlaylist(
+                "user1", "ExactFit", "Rock", music2.getDuration(), musics, new HashMap<>());
+
+        assertEquals(1, playlist.size());
+        assertEquals(music2.getName(), playlist.get(0).getName());
+    }
+
+    @Test
     void testCreateRandomPlaylist() {
         Map<String, Music> musics = new HashMap<>();
         musics.put("Song1", music1);
@@ -101,6 +114,17 @@ class PlaylistCreatorTest {
         assertNotNull(playlist);
         assertFalse(playlist.isEmpty());
         assertTrue(playlist.size() <= musics.size());
+    }
+
+    @Test
+    void createRandomPlaylistWithSingleSongReturnsExactlyThatSong() {
+        Map<String, Music> musics = new HashMap<>();
+        musics.put(music1.getName(), music1);
+
+        List<Music> playlist = assertDoesNotThrow(() -> PlaylistCreator.createRandomPlaylist(musics));
+
+        assertEquals(1, playlist.size());
+        assertEquals(music1.getName(), playlist.get(0).getName());
     }
 
     @Test
@@ -153,5 +177,42 @@ class PlaylistCreatorTest {
 
         assertThrows(IllegalArgumentException.class,
                 () -> PlaylistCreator.createFavoritesPlaylist(500, false, reproductions, musics));
+    }
+
+    @Test
+    void favoritesPlaylistUsesPlayCountOrderingExplicitFilterAndExactDuration() {
+        Music favorite = new Music("favorite", INTERPRETER1, PUBLISHER1, LYRICS1, MUSICAL_FIGURES1,
+                GENRE1, ALBUM1, 100, true);
+        Music runnerUp = new Music("runner-up", INTERPRETER1, PUBLISHER1, LYRICS1, MUSICAL_FIGURES1,
+                GENRE1, ALBUM1, 100, false);
+        Music rare = new Music("rare", INTERPRETER1, PUBLISHER1, LYRICS1, MUSICAL_FIGURES1,
+                GENRE1, ALBUM1, 100, false);
+        Map<String, Music> musics = new HashMap<>();
+        musics.put(favorite.getName(), favorite);
+        musics.put(runnerUp.getName(), runnerUp);
+        musics.put(rare.getName(), rare);
+        List<MusicReproduction> reproductions = Arrays.asList(
+                new MusicReproduction(rare),
+                new MusicReproduction(runnerUp),
+                new MusicReproduction(runnerUp),
+                new MusicReproduction(favorite),
+                new MusicReproduction(favorite),
+                new MusicReproduction(favorite)
+        );
+
+        List<Music> ordered = PlaylistCreator.createFavoritesPlaylist(300, false, reproductions, musics);
+        assertEquals(Arrays.asList("favorite", "runner-up", "rare"),
+                ordered.stream().map(Music::getName).toList());
+
+        List<Music> exactFit = PlaylistCreator.createFavoritesPlaylist(200, false, reproductions, musics);
+        assertEquals(Arrays.asList("favorite", "runner-up"),
+                exactFit.stream().map(Music::getName).toList());
+
+        List<Music> explicitOnly = PlaylistCreator.createFavoritesPlaylist(300, true, reproductions, musics);
+        assertEquals(List.of("favorite"), explicitOnly.stream().map(Music::getName).toList());
+
+        List<Music> unlimited = PlaylistCreator.createFavoritesPlaylist(0, false, reproductions, musics);
+        assertEquals(Arrays.asList("favorite", "runner-up", "rare"),
+                unlimited.stream().map(Music::getName).toList());
     }
 }

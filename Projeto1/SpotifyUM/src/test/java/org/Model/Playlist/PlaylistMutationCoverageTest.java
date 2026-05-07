@@ -40,11 +40,33 @@ class PlaylistMutationCoverageTest {
 
         assertEquals("first", playlist.getMusicBYIndex(0).getName());
         assertEquals("second", playlist.getMusicBYIndex(1).getName());
-        assertThrows(IndexOutOfBoundsException.class, () -> playlist.getMusicBYIndex(-1));
-        assertThrows(IndexOutOfBoundsException.class, () -> playlist.getMusicBYIndex(2));
+        IndexOutOfBoundsException lower = assertThrows(IndexOutOfBoundsException.class, () -> playlist.getMusicBYIndex(-1));
+        IndexOutOfBoundsException upper = assertThrows(IndexOutOfBoundsException.class, () -> playlist.getMusicBYIndex(2));
+        assertTrue(lower.getMessage().contains("limites"));
+        assertTrue(upper.getMessage().contains("limites"));
         assertThrows(AlreadyExistsException.class, () -> playlist.addMusic(first));
 
         assertTrue(playlist.removeMusic(first));
         assertFalse(playlist.removeMusic(first));
+    }
+
+    @Test
+    void everyConstructorAdvancesTheStaticIdCounter() {
+        Playlist withSongs1 = new Playlist("with-1", "u", List.of(song("a")));
+        Playlist withSongs2 = new Playlist("with-2", "u", List.of(song("b")));
+        assertEquals(withSongs1.getId() + 1, withSongs2.getId());
+
+        Playlist empty1 = new Playlist("empty-1", "u");
+        Playlist empty2 = new Playlist("empty-2", "u");
+        assertEquals(empty1.getId() + 1, empty2.getId());
+
+        Playlist default1 = new Playlist();
+        Playlist default2 = new Playlist();
+        assertEquals(default1.getId() + 1, default2.getId());
+
+        Playlist base = new Playlist("base", "u");
+        new Playlist(base);
+        Playlist afterCopy = new Playlist("after-copy", "u");
+        assertEquals(base.getId() + 2, afterCopy.getId());
     }
 }

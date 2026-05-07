@@ -141,6 +141,14 @@ public class MusicTest {
         assertNotEquals(music, differentName);
         assertNotEquals(music, null);
         assertNotEquals(music, new Object());
+
+        Music unnamed = new Music();
+        Music alsoUnnamed = new Music();
+        unnamed.setName(null);
+        alsoUnnamed.setName(null);
+        assertEquals(unnamed, alsoUnnamed);
+        alsoUnnamed.setName("named");
+        assertNotEquals(unnamed, alsoUnnamed);
     }
     
     @Test
@@ -155,6 +163,11 @@ public class MusicTest {
         assertTrue(result.contains(GENRE));
         assertTrue(result.contains(ALBUM));
         assertTrue(result.contains(String.valueOf(DURATION)));
+        assertTrue(result.contains("Explicita: Nao"));
+
+        Music explicitMusic = new Music(NAME, INTERPRETER, PUBLISHER, LYRICS, MUSICAL_FIGURES,
+                GENRE, ALBUM, DURATION, true);
+        assertTrue(explicitMusic.toString().contains("Explicita: Sim"));
     }
     
     @Test

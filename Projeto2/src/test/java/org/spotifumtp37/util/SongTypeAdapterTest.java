@@ -5,11 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.jupiter.api.Test;
+import org.spotifumtp37.model.album.Album;
 import org.spotifumtp37.model.album.ExplicitSong;
 import org.spotifumtp37.model.album.MultimediaSong;
 import org.spotifumtp37.model.album.Song;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,6 +39,25 @@ class SongTypeAdapterTest {
 
         assertInstanceOf(MultimediaSong.class, parsed);
         assertEquals("https://x", ((MultimediaSong) parsed).getVideoLink());
+    }
+
+    @Test
+    void deserializeMultimediaSongWithoutVideoLinkLeavesVideoLinkNull() {
+        String json = "{" +
+                "\"name\":\"video\"," +
+                "\"artist\":\"a\"," +
+                "\"publisher\":\"p\"," +
+                "\"lyrics\":\"l\"," +
+                "\"musicalNotes\":\"n\"," +
+                "\"genre\":\"g\"," +
+                "\"durationInSeconds\":120," +
+                "\"multimedia\":true" +
+                "}";
+
+        Song parsed = gson.fromJson(json, Song.class);
+
+        assertInstanceOf(MultimediaSong.class, parsed);
+        assertEquals(null, ((MultimediaSong) parsed).getVideoLink());
     }
 
     @Test
@@ -87,5 +108,18 @@ class SongTypeAdapterTest {
         assertTrue(obj.has("multimedia"));
         assertTrue(obj.get("multimedia").getAsBoolean());
         assertEquals("https://x", obj.get("videoLink").getAsString());
+    }
+
+    @Test
+    void serializeMultimediaSongWithoutVideoLinkOmitsVideoLinkProperty() {
+        Album album = new Album("album", "artist", 2024, "rock", java.util.List.of());
+        album.addSong("video", "publisher", "lyrics", "notes", "rock", 120, false, true, null);
+        Song multimedia = album.getSongs().get(0);
+
+        JsonObject obj = JsonParser.parseString(gson.toJson(multimedia, Song.class)).getAsJsonObject();
+
+        assertTrue(obj.has("multimedia"));
+        assertTrue(obj.get("multimedia").getAsBoolean());
+        assertFalse(obj.has("videoLink"));
     }
 }

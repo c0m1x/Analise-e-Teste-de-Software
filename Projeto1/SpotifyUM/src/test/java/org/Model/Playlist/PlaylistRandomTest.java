@@ -107,7 +107,10 @@ class PlaylistRandomTest {
         musicList3.add(music2);
         PlaylistRandom playlist3 = new PlaylistRandom("Another Playlist", musicList3);
 
+        assertEquals(playlist1, playlist1);
         assertEquals(playlist1, playlist2);
+        assertNotEquals(playlist1, null);
+        assertNotEquals(playlist1, new Object());
         assertNotEquals(playlist1, playlist3);
         assertNotEquals(playlist2, playlist3);
     }

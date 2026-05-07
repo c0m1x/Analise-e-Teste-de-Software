@@ -387,7 +387,12 @@ class UserTest {
         playlist = user.createTopGenrePlaylistWithinTime(albumMap, 200);
         assertEquals(1, playlist.size());
         assertEquals("Rock", playlist.get(0).getGenre());
-        
+
+        // Exact boundary should still include the song whose duration reaches the limit.
+        playlist = user.createTopGenrePlaylistWithinTime(albumMap, song1.getDurationInSeconds());
+        assertEquals(1, playlist.size());
+        assertEquals(song1.getName(), playlist.get(0).getName());
+
         // Test with time limit that doesn't allow any songs
         playlist = user.createTopGenrePlaylistWithinTime(albumMap, 100);
         assertTrue(playlist.isEmpty());

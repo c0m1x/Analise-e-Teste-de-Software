@@ -108,8 +108,13 @@ class PlaylistFavoritesTest {
 
         PlaylistFavorites playlist1 = new PlaylistFavorites(musicList);
         PlaylistFavorites playlist2 = new PlaylistFavorites(musicList);
+        List<Music> otherMusicList = new ArrayList<>();
+        otherMusicList.add(music2);
+        PlaylistFavorites different = new PlaylistFavorites(otherMusicList);
 
+        assertTrue(playlist1.equals(playlist1));
         assertTrue(playlist1.equals(playlist2));
+        assertFalse(playlist1.equals(different));
         assertFalse(playlist1.equals(null));
         assertFalse(playlist1.equals(new Object()));
     }
