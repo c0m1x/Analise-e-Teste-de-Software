@@ -1,13 +1,14 @@
 package org.Controller;
 
-import org.Controller.dtos.MusicInfo;
-import org.Model.SpotifUM;
-import org.junit.jupiter.api.Test;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.Controller.dtos.MusicInfo;
+import org.Model.SpotifUM;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
 
 class ControllerPitSurvivorTest {
 

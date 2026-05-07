@@ -1,15 +1,17 @@
 package org.Model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.Exceptions.NoArtistsInDatabaseException;
 import org.Model.Album.Album;
 import org.Model.Music.Music;
 import org.Model.User.User;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SpotifUMPitSurvivorTest {
 
