@@ -2,6 +2,37 @@
 a106927 - Tiago Martins  
 a106894 - Francisco Barros  
 
+## Atalhos (Makefile na raiz)
+
+Para tornar a reprodução mais simples (especialmente em avaliação), existe um `Makefile` na raiz com targets para **Projeto 1 (Maven)** e **Projeto 2 (Gradle)**.
+
+Ver lista de comandos:
+
+```bash
+make help
+```
+
+Pipeline completo (Projeto1 + Projeto2):
+
+```bash
+make full
+```
+
+Menu interativo por números:
+
+```bash
+make menu
+```
+
+Notas:
+- Podes sobrescrever os paths dos JDKs se o teu sistema for diferente:
+
+```bash
+make JAVA17=/path/to/jdk17 JAVA8=/path/to/jdk8 p1-test
+```
+- O `p1-evosuite-*` requer Java 8.
+- O `p2-evosuite` requer Docker.
+
 ## Projeto 1 (SpotifyUM / Maven)
 
 > **Resumo rápido:**  
@@ -80,6 +111,13 @@ cp -r "Projeto1/SpotifyUM/target/generated-test-sources/evosuite/org" \
       "Projeto1/SpotifyUM/src/test/java/"
 ```
 
+Alternativa (atalhos via Makefile da raiz):
+
+```bash
+make p1-evosuite-generate
+make p1-evosuite-copy
+```
+
 ---
 
 ## ✅ 6) EvoSuite — correr testes gerados (Java 8)
@@ -88,6 +126,12 @@ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 export PATH="$JAVA_HOME/bin:$PATH"
 
 mvn -f "Projeto1/SpotifyUM/pom.xml" -P evosuite-run clean test
+```
+
+Alternativa (atalho via Makefile da raiz):
+
+```bash
+make p1-evosuite-run
 ```
 
 ---

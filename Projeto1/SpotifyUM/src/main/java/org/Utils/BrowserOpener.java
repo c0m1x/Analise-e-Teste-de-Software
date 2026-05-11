@@ -35,9 +35,9 @@ public class BrowserOpener {
             URI uri = new URI(url);
 
             // Verifica se o ambiente Desktop é suportado
-            if (Desktop.isDesktopSupported()) {
+            if (isDesktopSupported()) {
                 // Abre o URI no browser padrão
-                Desktop.getDesktop().browse(uri);
+                browse(uri);
             } else {
                 throw new UnsupportedOperationException("Desktop não suportado.");
             }
@@ -48,5 +48,13 @@ public class BrowserOpener {
             // Lança novamente a exceção original
             throw new IOException("Erro ao tentar abrir o URL: " + url, e);
         }
+    }
+
+    protected boolean isDesktopSupported() {
+        return Desktop.isDesktopSupported();
+    }
+
+    protected void browse(URI uri) throws IOException {
+        Desktop.getDesktop().browse(uri);
     }
 }

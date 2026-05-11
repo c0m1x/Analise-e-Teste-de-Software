@@ -274,7 +274,8 @@
                             <timeInMinutesPerClass>${evosuite.timeInMinutesPerClass}</timeInMinutesPerClass>
                             <numberOfCores>${evosuite.numberOfCores}</numberOfCores>
                             <assertions>true</assertions>
-                            <javaCommand>/usr/lib/jvm/java-8-openjdk-amd64/bin/java</javaCommand>
+                            <!-- Use the Java executable of the currently active JDK (profile pins source/target=8) -->
+                            <javaCommand>${java.home}/bin/java</javaCommand>
                         </configuration>
                         <executions>
                             <execution>
@@ -326,38 +327,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Vintage engine: permite ao JUnit 5 / Surefire descobrir e correr testes JUnit 4 -->
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Restantes dependências para não quebrar outros testes no classpath -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.jqwik</groupId>
-            <artifactId>jqwik</artifactId>
-            <version>${jqwik.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>4.11.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
